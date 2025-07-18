@@ -1,0 +1,18 @@
+# 공통
+node_modules/
+*.log
+.DS_Store
+
+# Monorepo 하위 워크스페이스 캐시
+**/node_modules/
+**/dist/
+**/esm/
+**/.tsbuildinfo
+
+# IDE
+.vscode/
+.idea/
+
+# 환경파일
+.env
+.env.*
