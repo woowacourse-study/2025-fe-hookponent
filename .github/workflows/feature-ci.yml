@@ -1,0 +1,25 @@
+# .github/workflows/feature-ci.yml
+name: Feature Pull Request CI
+
+on:
+  pull_request:
+    branches:
+      - dev
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Run Tests
+        working-directory: ./packages/hooks
+        run: npm test

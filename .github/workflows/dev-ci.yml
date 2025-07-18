@@ -1,0 +1,44 @@
+name: Pull Request CI
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./packages/hooks
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Check Version Updated
+        run: |
+          CURRENT_VERSION=$(jq -r .version ./package.json)
+          git fetch origin main
+          BASE_VERSION=$(git show origin/main:packages/hooks/package.json | jq -r .version)
+
+          echo "Current: $CURRENT_VERSION"
+          echo "Base: $BASE_VERSION"
+
+          if [ "$CURRENT_VERSION" = "$BASE_VERSION" ]; then
+            echo "::error::🚨 package.json 버전이 변경되지 않았습니다. (명령어 npm version patch를 진행해 주세요!)"
+            exit 1
+          fi
+
+      - name: Run Tests
+        run: npm test
+
+      - name: Run Build
+        run: npm run build
