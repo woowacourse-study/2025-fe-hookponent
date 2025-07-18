@@ -1,10 +1,11 @@
 {
   "private": true,
   "workspaces": [
-    "packages",
+    "packages/*",
     "docs"
   ],
   "scripts": {
-    "build:hookdle": "npm run build --workspace=hookdledle"
+    "build:hookdle": "npm run build --workspace=hookdledle",
+    "dev:docs": "npm run start --workspace=docs"
   }
 }
