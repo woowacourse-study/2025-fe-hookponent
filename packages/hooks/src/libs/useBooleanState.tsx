@@ -1,10 +1,10 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback } from 'react';
 
 type UseBooleanStateReturn = [
   value: boolean,
   setTrue: () => void,
   setFalse: () => void,
-  toggle: () => void
+  toggle: () => void,
 ];
 
 /**
@@ -12,9 +12,7 @@ type UseBooleanStateReturn = [
  *
  * @returns [value, setTrue, setFalse, toggle]
  */
-export function useBooleanState(
-  initial: boolean = false
-): UseBooleanStateReturn {
+export function useBooleanState(initial: boolean = false): UseBooleanStateReturn {
   const [value, setValue] = useState(initial);
 
   const setTrue = useCallback(() => setValue(true), []);
