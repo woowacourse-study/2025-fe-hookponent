@@ -1,5 +1,5 @@
 {
-  "name": "hookdledle",
+  "name": "hookdle",
   "version": "1.0.0",
   "types": "dist/index.d.ts",
   "main": "dist/index.js",

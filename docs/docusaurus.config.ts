@@ -5,7 +5,7 @@ import type * as Preset from "@docusaurus/preset-classic";
 // Node.js 환경에서 실행되므로 브라우저 API나 JSX는 사용하지 마세요
 
 const config: Config = {
-  title: "hookdledle", // 사이트 제목
+  title: "hookdle", // 사이트 제목
   favicon: "img/favicon.ico", // 파비콘 경로
 
   future: {
@@ -43,9 +43,9 @@ const config: Config = {
 
     // 상단 네비게이션 바 설정
     navbar: {
-      title: "hookdledle",
+      title: "hookdle",
       logo: {
-        alt: "hookdledle 로고",
+        alt: "hookdle 로고",
         src: "img/logo.svg",
       },
       items: [
@@ -100,7 +100,7 @@ const config: Config = {
           ],
         },
       ],
-      copyright: `© ${new Date().getFullYear()} hookdledle. Built with Docusaurus.`,
+      copyright: `© ${new Date().getFullYear()} hookdle. Built with Docusaurus.`,
     },
 
     // 코드 하이라이팅 테마 설정

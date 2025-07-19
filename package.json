@@ -5,7 +5,7 @@
     "docs"
   ],
   "scripts": {
-    "build:hookdle": "npm run build --workspace=hookdledle",
+    "build:hookdle": "npm run build --workspace=hookdle",
     "dev:docs": "npm run start --workspace=docs"
   }
 }
