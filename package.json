@@ -5,7 +5,19 @@
     "docs"
   ],
   "scripts": {
-    "build:hookdle": "npm run build --workspace=hookdledle",
-    "dev:docs": "npm run start --workspace=docs"
+    "build:hookdle": "npm run build --workspace=hookdle",
+    "dev:docs": "npm run start --workspace=docs",
+    "lint": "eslint packages/ --ext .ts,.tsx",
+    "format": "prettier --write ."
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^8.37.0",
+    "@typescript-eslint/parser": "^8.37.0",
+    "eslint": "^9.31.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "prettier": "^3.6.2"
   }
 }
