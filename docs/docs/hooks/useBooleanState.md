@@ -30,7 +30,7 @@ const [value, setTrue, setFalse, toggle] = useBooleanState(defaultValue);
 ## ✅ 예시
 
 ```tsx
-import { useBooleanState } from "hookdle-test";
+import { useBooleanState } from 'hookdle';
 
 function BottomSheet() {
   const [open, openSheet, closeSheet, toggleSheet] = useBooleanState();
