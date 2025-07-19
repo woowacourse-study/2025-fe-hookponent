@@ -1,5 +1,5 @@
 ---
-name: Feature request
+name: 훅 제작 이슈
 about: Suggest an idea for this project
 title: ""
 labels: ""
