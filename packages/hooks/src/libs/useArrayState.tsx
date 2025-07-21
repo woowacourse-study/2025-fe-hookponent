@@ -13,9 +13,9 @@ interface UserDefinedArraySetterNameType<T> {
   updateAt: (updateIndex: number, updateValue: T) => void;
 }
 
-type userArrayStateReturn<T> = [T[], UserDefinedArraySetterNameType<T>];
+type UserArrayStateReturn<T> = [T[], UserDefinedArraySetterNameType<T>];
 
-export function useArrayState<T>(initialValue: T[] | (() => T[])): userArrayStateReturn<T> {
+export function useArrayState<T>(initialValue: T[] | (() => T[])): UserArrayStateReturn<T> {
   const [value, setValue] = useState<T[]>(initialValue);
 
   const userDefinedArraySetterName: UserDefinedArraySetterNameType<T> = useMemo(
