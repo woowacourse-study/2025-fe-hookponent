@@ -39,6 +39,7 @@ jobs:
           registry-url: https://registry.npmjs.org/
 
       - name: Install root dependencies
+        working-directory: ./
         run: npm ci
 
   publish-hooks:
