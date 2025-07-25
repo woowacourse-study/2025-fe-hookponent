@@ -1,5 +1,4 @@
-# .github/workflows/publish.yml
-name: Publish React Package to npm
+name: Publish Packages to npm
 
 on:
   push:
@@ -7,8 +6,33 @@ on:
       - main
 
 jobs:
-  publish:
+  changes:
     runs-on: ubuntu-latest
+    outputs:
+      hooks: ${{ steps.filter.outputs.hooks }}
+      components: ${{ steps.filter.outputs.components }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Detect Changed Packages
+        id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            hooks:
+              - 'packages/hooks/**'
+            components:
+              - 'packages/components/**'
+
+  publish-hooks:
+    needs: changes
+    if: needs.changes.outputs.hooks == 'true'
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: packages/hooks
 
     steps:
       - uses: actions/checkout@v4
@@ -21,12 +45,38 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
-      - name: Build React Package
-        working-directory: ./packages/hooks
+      - name: Build Package
         run: npm run build
 
-      - name: Publish React Package
-        working-directory: ./packages/hooks
+      - name: Publish Package
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  publish-components:
+    needs: changes
+    if: needs.changes.outputs.components == 'true'
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: packages/components
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://registry.npmjs.org/
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Build Package
+        run: npm run build
+
+      - name: Publish Package
         run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

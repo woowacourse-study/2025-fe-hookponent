@@ -6,9 +6,11 @@
   ],
   "scripts": {
     "build:hookdle": "npm run build --workspace=hookdle",
+    "build:componentdle": "npm run build --workspace=componentdle",
     "dev:docs": "npm run start --workspace=docs",
     "lint": "eslint packages/ --ext .ts,.tsx",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "clean": "rm -rf node_modules && npm install"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^8.37.0",
