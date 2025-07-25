@@ -28,7 +28,6 @@ jobs:
   install-dependencies:
     runs-on: ubuntu-latest
     needs: changes
-    if: needs.changes.outputs.hooks == 'true' || needs.changes.outputs.components == 'true'
     outputs:
       cache-hit: true
     steps:
@@ -44,7 +43,6 @@ jobs:
 
   publish-hooks:
     needs: [changes, install-dependencies]
-    if: needs.changes.outputs.hooks == 'true'
     runs-on: ubuntu-latest
 
     defaults:
@@ -64,7 +62,6 @@ jobs:
 
   publish-components:
     needs: [changes, install-dependencies]
-    if: needs.changes.outputs.components == 'true'
     runs-on: ubuntu-latest
 
     defaults:
