@@ -1,11 +1,16 @@
 {
-  "extends": "./tsconfig.json",
   "compilerOptions": {
+    "target": "ES2017",
     "module": "ESNext",
-    "outDir": "esm",
     "declaration": true,
+    "outDir": "esm",
     "declarationDir": "esm/types",
-    "types": ["react", "jest", "@testing-library/jest-dom", "node"]
+    "jsx": "react-jsx",
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "types": ["react", "node"]
   },
   "include": ["src", "index.ts"],
   "exclude": ["**/*.spec.ts", "**/*.spec.tsx", "**/__tests__/**"]
