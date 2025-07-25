@@ -6,14 +6,19 @@ on:
       - main
 
 jobs:
-  changes:
+  publish:
     runs-on: ubuntu-latest
-    outputs:
-      hooks: ${{ steps.filter.outputs.hooks }}
-      components: ${{ steps.filter.outputs.components }}
 
     steps:
       - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://registry.npmjs.org/
+
+      - name: Install dependencies
+        run: npm ci
 
       - name: Detect Changed Packages
         id: filter
@@ -25,54 +30,18 @@ jobs:
             components:
               - 'packages/components/**'
 
-  install-dependencies:
-    runs-on: ubuntu-latest
-    needs: changes
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          registry-url: https://registry.npmjs.org/
-
-      - name: Install root dependencies
-        run: npm ci
-
-  publish-hooks:
-    needs: [changes, install-dependencies]
-    runs-on: ubuntu-latest
-
-    defaults:
-      run:
-        working-directory: packages/hooks
-
-    steps:
-      - uses: actions/checkout@v4
-
       - name: Build hooks
-        run: npm run build
+        run: npm run build --workspace=hookdle
 
       - name: Publish hooks
-        run: npm publish
+        run: npm publish --workspace=hookdle
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-  publish-components:
-    needs: [changes, install-dependencies]
-    runs-on: ubuntu-latest
-
-    defaults:
-      run:
-        working-directory: packages/components
-
-    steps:
-      - uses: actions/checkout@v4
-
       - name: Build components
-        run: npm run build
+        run: npm run build --workspace=componentdle
 
       - name: Publish components
-        run: npm publish
+        run: npm publish --workspace=componentdle
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
