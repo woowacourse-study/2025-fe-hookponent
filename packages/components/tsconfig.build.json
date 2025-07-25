@@ -1,4 +1,11 @@
 {
   "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "CommonJS",
+    "outDir": "dist",
+    "declaration": true,
+    "types": ["react", "jest", "@testing-library/jest-dom", "node"]
+  },
+  "include": ["src", "index.ts"],
   "exclude": ["**/*.spec.ts", "**/*.spec.tsx", "**/__tests__/**"]
 }

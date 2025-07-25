@@ -10,7 +10,7 @@
     "moduleResolution": "node", // ✅ 모듈 탐색 방식
     "skipLibCheck": true, // ✅ 빠른 빌드용
     "forceConsistentCasingInFileNames": true, // ✅ OS간 대소문자 충돌 방지
-    "types": ["jest", "@testing-library/jest-dom", "node"]
+    "types": ["react", "jest", "@testing-library/jest-dom", "node"]
   },
   "include": ["src", "index.ts"]
 }
