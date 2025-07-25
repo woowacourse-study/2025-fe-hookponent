@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "ESNext", // ✅ ESM 빌드용
+    "outDir": "esm", // ✅ 빌드 결과 위치
+    "declaration": true, // ✅ 타입 파일 생성
+    "declarationDir": "esm" // ⛔️ 불필요 (outDir과 같으면 생략 가능)
+  }
+}
