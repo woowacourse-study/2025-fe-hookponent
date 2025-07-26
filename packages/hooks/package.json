@@ -1,6 +1,6 @@
 {
   "name": "hookdle",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "types": "dist/index.d.ts",
   "main": "dist/index.js",
   "module": "esm/index.js",
@@ -23,7 +23,7 @@
     "esm"
   ],
   "scripts": {
-    "build:cjs": "tsc",
+    "build:cjs": "tsc -p tsconfig.build.json",
     "build:esm": "tsc -p tsconfig.esm.json",
     "build": "npm run build:cjs && npm run build:esm",
     "typecheck": "tsc --noEmit",
@@ -34,6 +34,8 @@
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
     "@types/jest": "^30.0.0",
+    "@types/node": "^24.1.0",
+    "@types/react": "^19.1.8",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",

@@ -9,7 +9,8 @@
     "esModuleInterop": true, // ✅ CommonJS import 호환
     "moduleResolution": "node", // ✅ 모듈 탐색 방식
     "skipLibCheck": true, // ✅ 빠른 빌드용
-    "forceConsistentCasingInFileNames": true // ✅ OS간 대소문자 충돌 방지
+    "forceConsistentCasingInFileNames": true, // ✅ OS간 대소문자 충돌 방지
+    "types": ["react", "jest", "@testing-library/jest-dom", "node"]
   },
   "include": ["src", "index.ts"]
 }
