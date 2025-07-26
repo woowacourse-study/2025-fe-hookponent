@@ -31,17 +31,21 @@ jobs:
               - 'packages/components/**'
 
       - name: Build hooks
+        if: steps.filter.outputs.hooks == 'true'
         run: npm run build --workspace=hookdle
 
       - name: Publish hooks
+        if: steps.filter.outputs.hooks == 'true'
         run: npm publish --workspace=hookdle
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Build components
+        if: steps.filter.outputs.hooks == 'true'
         run: npm run build --workspace=componentdle
 
       - name: Publish components
+        if: steps.filter.outputs.hooks == 'true'
         run: npm publish --workspace=componentdle
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
