@@ -6,7 +6,11 @@ type UseLocalStorageOptions<T> = {
   autoInit?: boolean;
 };
 
-type useLocalStorageReturn<T> = [storedValue: T, setValue: (storedValue: T | ((prev: T) => T)) => void];
+type useLocalStorageReturn<T> = [
+  storedValue: T,
+  setValue: (storedValue: T | ((prev: T) => T)) => void,
+  refresh: () => void,
+];
 
 /**
  *
@@ -28,6 +32,10 @@ export function useLocalStorage<T>(
     storage.set(key, valueToStore, serializer);
   };
 
+  const refresh = () => {
+    setStoredValue(storage.get(key, initialValue, deserializer));
+  };
+
   useEffect(() => {
     if (!autoInit) return;
 
@@ -41,7 +49,7 @@ export function useLocalStorage<T>(
     }
   }, []);
 
-  return [storedValue, setValue] as const;
+  return [storedValue, setValue, refresh] as const;
 }
 
 const storage = {
