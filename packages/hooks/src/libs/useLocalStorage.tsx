@@ -13,8 +13,23 @@ type useLocalStorageReturn<T> = [
 ];
 
 /**
+ * useLocalStorage 훅은 localStorage에 상태를 저장하고 동기화하는 상태 관리 훅입니다.
  *
- * @returns [storedValue, setValue]
+ * - 상태를 저장하면 localStorage에 자동으로 반영됩니다.
+ * - 새로고침 후에도 저장된 값을 유지하며, 기본값은 값이 없을 경우에만 사용됩니다.
+ * - 상태를 외부에서 변경한 경우, `refresh()`를 통해 강제로 동기화할 수 있습니다.
+ *
+ * @param {string} key localStorage에 저장할 키
+ * @param {T} initialValue localStorage에 값이 없을 때 사용할 초기값
+ * @param {UseLocalStorageOptions<T>} [options] 직렬화, 역직렬화 방식 및 초기 저장 여부 설정
+ * @param {boolean} [options.autoInit=true] localStorage에 값이 없을 경우 초기값을 자동 저장할지 여부
+ * @param {(value: T) => string} [options.serializer] 커스텀 직렬화 함수 (기본값: JSON.stringify)
+ * @param {(value: string) => T} [options.deserializer] 커스텀 역직렬화 함수 (기본값: JSON.parse)
+ *
+ * @returns {[T, (value: T | ((prev: T) => T)) => void, () => void]}
+ * - [0]: 현재 상태 값
+ * - [1]: 상태를 업데이트하고 localStorage에 저장하는 setter
+ * - [2]: localStorage에서 최신 값을 가져와 상태를 수동으로 동기화하는 refresh 함수
  */
 
 export function useLocalStorage<T>(
