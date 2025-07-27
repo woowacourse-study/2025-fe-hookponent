@@ -4,7 +4,7 @@
     "module": "ESNext",
     "declaration": true,
     "outDir": "esm",
-    "declarationDir": "esm/types",
+    "declarationDir": "esm",
     "jsx": "react-jsx",
     "esModuleInterop": true,
     "moduleResolution": "node",
