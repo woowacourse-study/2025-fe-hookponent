@@ -1,43 +1,49 @@
 import { useState } from 'react';
 
-// 초기값은 어떻게 작업하는게 좋지?
-// 초기에는 parameter로 초기값이 들어온다?
-// 이건 setter랑 getter로 나눠야할듯?
-// 초기값 저장할 때는 localStorage -> 저장 후, 상태에 초기값 반영
-// setter할 때는 상태 먼저 변경후, 로컬 스토리지도 동기화 시키기
-//
+type UseLocalStorageOptions<T> = {
+  serializer?: (value: T) => string;
+  deserializer?: (value: string) => T;
+};
+
+type useLocalStorageReturn<T> = [storedValue: T, setValue: (storedValue: T | ((prev: T) => T)) => void];
 
 /**
  *
- * @returns
+ * @returns [storedValue, setValue]
  */
 
-export function useLocalStorage<T>(key: string, initialValue: T) {
-  const [storedValue, setStoredValue] = useState<T>(() => storage.get(key, initialValue));
+export function useLocalStorage<T>(
+  key: string,
+  initialValue: T,
+  options?: UseLocalStorageOptions<T>
+): useLocalStorageReturn<T> {
+  const { serializer = JSON.stringify, deserializer = JSON.parse } = options;
+
+  const [storedValue, setStoredValue] = useState<T>(() => storage.get(key, initialValue, deserializer));
 
   const setValue = (value: T | ((prev: T) => T)) => {
     const valueToStore = value instanceof Function ? value(storedValue) : value;
     setStoredValue(valueToStore);
-    storage.set(key, valueToStore);
+    storage.set(key, valueToStore, serializer);
   };
 
   return [storedValue, setValue] as const;
 }
 
 const storage = {
-  get<T>(key: string, defaultValue: T): T {
+  get<T>(key: string, defaultValue: T, deserializer?: (value: string) => T): T {
     try {
       const item = localStorage.getItem(key);
-      return item ? JSON.parse(item) : defaultValue;
+      return item ? deserializer(item) : defaultValue;
     } catch (error) {
       console.error('localStorage getItem 오류', error);
       return defaultValue;
     }
   },
 
-  set<T>(key: string, value: T): void {
+  set<T>(key: string, value: T, serializer?: (value: T) => string): void {
     try {
-      localStorage.setItem(key, JSON.stringify(value));
+      localStorage.setItem(key, serializer(value));
     } catch (error) {
       console.error('localStorage setItem 오류', error);
     }
