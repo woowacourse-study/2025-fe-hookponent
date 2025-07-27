@@ -26,11 +26,20 @@ export function useLocalStorage<T>(key: string, initialValue: T) {
 
 const storage = {
   get<T>(key: string, defaultValue: T): T {
-    const item = localStorage.getItem(key);
-    return item ? JSON.parse(item) : defaultValue;
+    try {
+      const item = localStorage.getItem(key);
+      return item ? JSON.parse(item) : defaultValue;
+    } catch (error) {
+      console.error('localStorage getItem 오류', error);
+      return defaultValue;
+    }
   },
 
   set<T>(key: string, value: T): void {
-    localStorage.setItem(key, JSON.stringify(value));
+    try {
+      localStorage.setItem(key, JSON.stringify(value));
+    } catch (error) {
+      console.error('localStorage setItem 오류', error);
+    }
   },
 };
