@@ -17,7 +17,7 @@ export function useLocalStorage<T>(
   initialValue: T,
   options?: UseLocalStorageOptions<T>
 ): useLocalStorageReturn<T> {
-  const { serializer = JSON.stringify, deserializer = JSON.parse } = options;
+  const { serializer = JSON.stringify, deserializer = JSON.parse } = options ?? {};
 
   const [storedValue, setStoredValue] = useState<T>(() => storage.get(key, initialValue, deserializer));
 
