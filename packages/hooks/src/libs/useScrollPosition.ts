@@ -78,13 +78,15 @@ export function useScrollPosition(options?: UseScrollPositionOptions): UseScroll
 }
 
 function getScrollPosition(target?: HTMLElement | Window) {
-  if (target instanceof Window) {
-    return { x: target.scrollX, y: target.scrollY };
+  if (!target) return { x: 0, y: 0 };
+
+  // Window 객체인지 안전하게 확인
+  const isWindow = target === window || (typeof Window !== 'undefined' && target instanceof Window);
+
+  if (isWindow) {
+    return { x: (target as Window).scrollX ?? 0, y: (target as Window).scrollY ?? 0 };
   }
-  if (target) {
-    return { x: target.scrollLeft, y: target.scrollTop };
-  }
-  return { x: 0, y: 0 };
+  return { x: (target as HTMLElement).scrollLeft ?? 0, y: (target as HTMLElement).scrollTop ?? 0 };
 }
 
 function getScrollDirection(curPosition: { x: number; y: number }, prevPosition: { x: number; y: number }) {
