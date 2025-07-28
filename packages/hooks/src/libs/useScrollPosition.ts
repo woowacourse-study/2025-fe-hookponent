@@ -61,6 +61,13 @@ export function useScrollPosition(options?: UseScrollPositionOptions): UseScroll
   }, [onScroll, target, throttleMs]);
 
   useEffect(() => {
+    const initialPos = getScrollPosition(target?.current ?? window);
+    setPosition(initialPos);
+    prevXRef.current = initialPos.x;
+    prevYRef.current = initialPos.y;
+  }, [target]);
+
+  useEffect(() => {
     const targetElement = target?.current ?? window;
 
     targetElement.addEventListener('scroll', handleScroll);
