@@ -31,6 +31,8 @@ export interface UseScrollPositionOptions {
 }
 
 export function useScrollPosition(options?: UseScrollPositionOptions): UseScrollPositionReturn {
+  const { target, throttleMs, onScroll } = options || {};
+
   const [position, setPosition] = useState<ScrollPosition>({ x: 0, y: 0 });
   const [direction, setDirection] = useState<ScrollDirection>('none');
 
@@ -41,29 +43,29 @@ export function useScrollPosition(options?: UseScrollPositionOptions): UseScroll
 
   const handleScroll = useCallback(() => {
     const now = Date.now();
-    if (options?.throttleMs && now - lastCall.current < options.throttleMs) return;
+    if (throttleMs && now - lastCall.current < throttleMs) return;
 
-    const newPos = getScrollPosition(options?.target?.current ?? window);
+    const newPos = getScrollPosition(target?.current ?? window);
     const newDir = getScrollDirection(newPos, {
       x: prevXRef.current,
       y: prevYRef.current,
     });
 
-    options?.onScroll?.(newPos, newDir);
+    onScroll?.(newPos, newDir);
 
     prevXRef.current = newPos.x;
     prevYRef.current = newPos.y;
     setPosition(newPos);
     setDirection(newDir);
     lastCall.current = now;
-  }, [options]);
+  }, [onScroll, target, throttleMs]);
 
   useEffect(() => {
-    const targetElement = options?.target?.current ?? window;
+    const targetElement = target?.current ?? window;
 
     targetElement.addEventListener('scroll', handleScroll);
     return () => targetElement.removeEventListener('scroll', handleScroll);
-  }, [handleScroll, options?.target]);
+  }, [handleScroll, target]);
 
   return { position, direction };
 }
