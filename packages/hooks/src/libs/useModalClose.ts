@@ -1,11 +1,11 @@
 import { useEffect } from 'react';
 
-interface useModalCloseTriggerProps {
+interface useModalCloseProps {
   ref: React.RefObject<HTMLElement | null>;
   onClose: () => void;
 }
 
-function useModalCloseTrigger({ ref, onClose }: useModalCloseTriggerProps) {
+function useModalClose({ ref, onClose }: useModalCloseProps) {
   const handleKeyDown = (e: KeyboardEvent) => {
     if (e.key === 'Escape') {
       onClose();
@@ -29,4 +29,4 @@ function useModalCloseTrigger({ ref, onClose }: useModalCloseTriggerProps) {
   }, [ref, onClose]);
 }
 
-export default useModalCloseTrigger;
+export default useModalClose;
