@@ -1,10 +1,13 @@
 import { useCallback, useEffect, useRef } from 'react';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type UseDebounceReturn<T extends any[]> = (...args: T) => any;
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function useDebounce<T extends any[]>(callback: (...args: T) => any, wait: number): UseDebounceReturn<T> {
   const timerIdRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const callbackRef = useRef(callback);
+  let returnValue = {};
 
   const debounced = useCallback(
     (...args: T) => {
@@ -13,8 +16,10 @@ export function useDebounce<T extends any[]>(callback: (...args: T) => any, wait
       }
 
       timerIdRef.current = setTimeout(() => {
-        callbackRef.current(...args);
+        returnValue = callbackRef.current(...args);
       }, wait);
+
+      return returnValue;
     },
     [wait]
   );
