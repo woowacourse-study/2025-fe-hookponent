@@ -1,5 +1,4 @@
-# .github/workflows/publish.yml
-name: Publish React Package to npm
+name: Publish Packages to npm
 
 on:
   push:
@@ -18,15 +17,35 @@ jobs:
           node-version: 20
           registry-url: https://registry.npmjs.org/
 
-      - name: Install Dependencies
+      - name: Install dependencies
         run: npm ci
 
-      - name: Build React Package
-        working-directory: ./packages/hooks
-        run: npm run build
+      - name: Detect Changed Packages
+        id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            hooks:
+              - 'packages/hooks/**'
+            components:
+              - 'packages/components/**'
 
-      - name: Publish React Package
-        working-directory: ./packages/hooks
-        run: npm publish
+      - name: Build hooks
+        if: steps.filter.outputs.hooks == 'true'
+        run: npm run build --workspace=hookdle
+
+      - name: Publish hooks
+        if: steps.filter.outputs.hooks == 'true'
+        run: npm publish --workspace=hookdle
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Build components
+        if: steps.filter.outputs.hooks == 'true'
+        run: npm run build --workspace=componentdle
+
+      - name: Publish components
+        if: steps.filter.outputs.hooks == 'true'
+        run: npm publish --workspace=componentdle
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

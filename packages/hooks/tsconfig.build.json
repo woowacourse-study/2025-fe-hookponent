@@ -1,10 +1,9 @@
 {
   "compilerOptions": {
     "target": "ES2017",
-    "module": "ESNext",
+    "module": "CommonJS",
     "declaration": true,
-    "outDir": "esm",
-    "declarationDir": "esm",
+    "outDir": "dist",
     "jsx": "react-jsx",
     "esModuleInterop": true,
     "moduleResolution": "node",

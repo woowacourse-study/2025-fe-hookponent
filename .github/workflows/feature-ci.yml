@@ -1,5 +1,4 @@
-# .github/workflows/feature-ci.yml
-name: Feature Pull Request CI
+name: Monorepo Package CI
 
 on:
   pull_request:
@@ -7,7 +6,28 @@ on:
       - dev
 
 jobs:
-  test:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      hooks: ${{ steps.filter.outputs.hooks }}
+      components: ${{ steps.filter.outputs.components }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Detect changed packages
+        id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            hooks:
+              - 'packages/hooks/**'
+            components:
+              - 'packages/components/**'
+
+  hooks-test:
+    needs: changes
+    if: needs.changes.outputs.hooks == 'true'
     runs-on: ubuntu-latest
 
     steps:
@@ -17,9 +37,28 @@ jobs:
         with:
           node-version: 20
 
-      - name: Install Dependencies
+      - name: Install dependencies
         run: npm install
 
-      - name: Run Tests
-        working-directory: ./packages/hooks
+      - name: Run hooks tests
+        working-directory: packages/hooks
+        run: npm test
+
+  components-test:
+    needs: changes
+    if: needs.changes.outputs.components == 'true'
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run components tests
+        working-directory: packages/components
         run: npm test
