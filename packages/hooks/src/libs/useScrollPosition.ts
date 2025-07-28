@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 export interface ScrollPosition {
   x: number; // 현재 수평 스크롤 값
@@ -31,19 +31,29 @@ export interface UseScrollPositionOptions {
 }
 
 export function useScrollPosition(options?: UseScrollPositionOptions): UseScrollPositionReturn {
+  const [position, setPosition] = useState<ScrollPosition>({ x: 0, y: 0 });
+  const [direction, setDirection] = useState<ScrollDirection>('none');
+
   const prevXRef = useRef(0);
   const prevYRef = useRef(0);
 
-  const position = getScrollPosition(options.target.current);
-  const direction = getScrollDirection(position, { x: prevXRef.current, y: prevYRef.current });
+  const handleScroll = useCallback(() => {
+    const newPos = getScrollPosition(options?.target?.current ?? window);
+    const newDir = getScrollDirection(newPos, { x: prevXRef.current, y: prevYRef.current });
 
-  const handleScroll = () => {
-    options.onScroll(position, direction);
-  };
+    prevXRef.current = newPos.x;
+    prevYRef.current = newPos.y;
+
+    options?.onScroll?.(newPos, newDir);
+    setPosition(newPos);
+    setDirection(newDir);
+  }, [options]);
 
   useEffect(() => {
-    options.target.current.addEventListener('scroll', handleScroll);
-    return () => options.target.current.removeEventListener('scroll', handleScroll);
+    const targetElement = options?.target?.current ?? window;
+
+    targetElement.addEventListener('scroll', handleScroll);
+    return () => targetElement.removeEventListener('scroll', handleScroll);
   });
 
   return { position, direction };
