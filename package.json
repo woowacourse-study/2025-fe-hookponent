@@ -2,11 +2,15 @@
   "private": true,
   "workspaces": [
     "packages/*",
-    "docs"
+    "docs",
+    "playground"
   ],
   "scripts": {
     "build:hookdle": "npm run build --workspace=hookdle",
     "build:componentdle": "npm run build --workspace=componentdle",
+    "dev:playground": "npm run dev --workspace=playground",
+    "test:hookdle": "npm run test --workspace=hookdle",
+    "test:componentdle": "npm run test --workspace=componentdle",
     "dev:docs": "npm run start --workspace=docs",
     "lint": "eslint packages/ --ext .ts,.tsx",
     "format": "prettier --write .",
