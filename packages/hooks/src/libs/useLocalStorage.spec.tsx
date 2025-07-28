@@ -1,0 +1,60 @@
+import { act, renderHook } from '@testing-library/react';
+import { useLocalStorage } from './useLocalStorage';
+
+describe('`useLocalStorage`', () => {
+  beforeEach(() => {
+    localStorage.clear();
+  });
+
+  it('초기값이 localStorage에 없을 경우 initialValue가 사용된다.', () => {
+    const { result } = renderHook(() => useLocalStorage('key', 'default'));
+    const [value] = result.current;
+
+    expect(value).toBe('default');
+  });
+
+  it('초기값이 localStorage에 없고 autoInit이 true면 저장된다.', () => {
+    renderHook(() => useLocalStorage('key', 'default', { autoInit: true }));
+    expect(localStorage.getItem('key')).toBe(JSON.stringify('default'));
+  });
+
+  it('값을 setValue로 바꾸면 localStorage에도 반영된다.', () => {
+    const { result } = renderHook(() => useLocalStorage('key', 'default'));
+    const [, setValue] = result.current;
+
+    act(() => {
+      setValue('newValue');
+    });
+
+    expect(localStorage.getItem('key')).toBe(JSON.stringify('newValue'));
+  });
+
+  it('refresh를 호출하면 localStorage 값을 상태에 반영한다.', () => {
+    localStorage.setItem('key', JSON.stringify('fromStorage'));
+
+    const { result } = renderHook(() => useLocalStorage('key', 'default'));
+    const [, , refresh] = result.current;
+
+    act(() => {
+      refresh();
+    });
+
+    const [value] = result.current;
+    expect(value).toBe('fromStorage');
+  });
+
+  it('serializer/deserializer를 커스터마이징할 수 있다.', () => {
+    const serializer = (v: number[]) => v.join(',');
+    const deserializer = (v: string) => v.split(',').map(Number);
+
+    const { result } = renderHook(() =>
+      useLocalStorage('key', [1, 2, 3], {
+        serializer,
+        deserializer,
+      })
+    );
+
+    const [value] = result.current;
+    expect(value).toEqual([1, 2, 3]);
+  });
+});
