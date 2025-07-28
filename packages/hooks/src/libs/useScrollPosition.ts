@@ -40,19 +40,19 @@ export function useScrollPosition(options?: UseScrollPositionOptions): UseScroll
   const lastCall = useRef(0);
 
   const handleScroll = useCallback(() => {
+    const now = Date.now();
+    if (options?.throttleMs && now - lastCall.current < options.throttleMs) return;
+
     const newPos = getScrollPosition(options?.target?.current ?? window);
     const newDir = getScrollDirection(newPos, {
       x: prevXRef.current,
       y: prevYRef.current,
     });
-    prevXRef.current = newPos.x;
-    prevYRef.current = newPos.y;
-
-    const now = Date.now();
-    if (options?.throttleMs && now - lastCall.current < options.throttleMs) return;
 
     options?.onScroll?.(newPos, newDir);
 
+    prevXRef.current = newPos.x;
+    prevYRef.current = newPos.y;
     setPosition(newPos);
     setDirection(newDir);
     lastCall.current = now;
@@ -63,7 +63,7 @@ export function useScrollPosition(options?: UseScrollPositionOptions): UseScroll
 
     targetElement.addEventListener('scroll', handleScroll);
     return () => targetElement.removeEventListener('scroll', handleScroll);
-  });
+  }, [handleScroll, options?.target]);
 
   return { position, direction };
 }
