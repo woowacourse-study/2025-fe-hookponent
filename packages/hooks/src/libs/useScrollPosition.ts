@@ -37,16 +37,25 @@ export function useScrollPosition(options?: UseScrollPositionOptions): UseScroll
   const prevXRef = useRef(0);
   const prevYRef = useRef(0);
 
+  const lastCall = useRef(0);
+
   const handleScroll = useCallback(() => {
     const newPos = getScrollPosition(options?.target?.current ?? window);
-    const newDir = getScrollDirection(newPos, { x: prevXRef.current, y: prevYRef.current });
-
+    const newDir = getScrollDirection(newPos, {
+      x: prevXRef.current,
+      y: prevYRef.current,
+    });
     prevXRef.current = newPos.x;
     prevYRef.current = newPos.y;
 
+    const now = Date.now();
+    if (options?.throttleMs && now - lastCall.current < options.throttleMs) return;
+
     options?.onScroll?.(newPos, newDir);
+
     setPosition(newPos);
     setDirection(newDir);
+    lastCall.current = now;
   }, [options]);
 
   useEffect(() => {
