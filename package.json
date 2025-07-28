@@ -2,12 +2,18 @@
   "private": true,
   "workspaces": [
     "packages/*",
-    "docs"
+    "docs",
+    "playground"
   ],
   "scripts": {
     "build:hookdle": "npm run build --workspace=hookdle",
     "build:componentdle": "npm run build --workspace=componentdle",
+    "test:hookdle": "npm run test --workspace=hookdle",
+    "test:componentdle": "npm run test --workspace=componentdle",
+    "version-up:hookdle": "npm version patch --workspace=hookdle",
+    "version-up:componentdle": "npm version patch --workspace=componentdle",
     "dev:docs": "npm run start --workspace=docs",
+    "dev:playground": "npm run dev --workspace=playground",
     "lint": "eslint packages/ --ext .ts,.tsx",
     "format": "prettier --write .",
     "clean": "rm -rf node_modules && npm install"
