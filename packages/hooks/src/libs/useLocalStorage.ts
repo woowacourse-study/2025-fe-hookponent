@@ -37,7 +37,7 @@ export function useLocalStorage<T>(
   initialValue: T,
   options?: UseLocalStorageOptions<T>
 ): useLocalStorageReturn<T> {
-  const { serializer = JSON.stringify, deserializer = JSON.parse, autoInit = true } = options ?? {};
+  const { serializer, deserializer, autoInit = true } = options ?? {};
 
   const serializerRef = useRef(serializer);
   const deserializerRef = useRef(deserializer);
@@ -63,6 +63,17 @@ export function useLocalStorage<T>(
   const refresh = () => {
     setStoredValue(storage.get(key, initialValue, deserializerRef.current));
   };
+
+  //외부에서 상태 변경되었을 때, 해당 로컬스토리지의 값으로 상태를 반영해준다.
+  useEffect(() => {
+    const storageHandler = (event: StorageEvent) => {
+      if (event.key === key) setValue(storage.get(key));
+    };
+
+    window.addEventListener('storage', storageHandler);
+
+    return () => window.removeEventListener('storage', storageHandler);
+  }, [key, setValue]);
 
   useEffect(() => {
     if (!autoInitRef.current) return;
@@ -93,10 +104,11 @@ export function useLocalStorage<T>(
 }
 
 const storage = {
-  get<T>(key: string, defaultValue: T, deserializer?: (value: string) => T): T {
+  get<T>(key: string, defaultValue?: T, deserializer?: (value: string) => T): T {
+    const parse = deserializer ?? JSON.parse;
     try {
       const item = localStorage.getItem(key);
-      return item ? deserializer(item) : defaultValue;
+      return item ? parse(item) : defaultValue || null;
     } catch (error) {
       console.error('localStorage getItem 오류', error);
       return defaultValue;
@@ -104,8 +116,10 @@ const storage = {
   },
 
   set<T>(key: string, value: T, serializer?: (value: T) => string): void {
+    const stringify = serializer ?? JSON.stringify;
+
     try {
-      localStorage.setItem(key, serializer(value));
+      localStorage.setItem(key, stringify(value));
     } catch (error) {
       console.error('localStorage setItem 오류', error);
     }
