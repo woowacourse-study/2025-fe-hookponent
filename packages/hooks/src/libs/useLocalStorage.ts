@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 type UseLocalStorageOptions<T> = {
   serializer?: (value: T) => string;
@@ -41,11 +41,16 @@ export function useLocalStorage<T>(
 
   const [storedValue, setStoredValue] = useState<T>(() => storage.get(key, initialValue, deserializer));
 
-  const setValue = (value: T | ((prev: T) => T)) => {
-    const valueToStore = value instanceof Function ? value(storedValue) : value;
-    setStoredValue(valueToStore);
-    storage.set(key, valueToStore, serializer);
-  };
+  const setValue = useCallback(
+    (value: T | ((prev: T) => T)) => {
+      setStoredValue((prev) => {
+        const valueToStore = value instanceof Function ? value(prev) : value;
+        storage.set(key, valueToStore, serializer);
+        return valueToStore;
+      });
+    },
+    [key, serializer]
+  );
 
   const refresh = () => {
     setStoredValue(storage.get(key, initialValue, deserializer));
