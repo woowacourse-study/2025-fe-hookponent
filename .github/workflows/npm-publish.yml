@@ -41,11 +41,11 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Build components
-        if: steps.filter.outputs.hooks == 'true'
+        if: steps.filter.outputs.components == 'true'
         run: npm run build --workspace=componentdle
 
       - name: Publish components
-        if: steps.filter.outputs.hooks == 'true'
+        if: steps.filter.outputs.components == 'true'
         run: npm publish --workspace=componentdle
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
