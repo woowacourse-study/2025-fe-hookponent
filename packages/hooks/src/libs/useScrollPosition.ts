@@ -1,32 +1,21 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 export interface ScrollPosition {
-  x: number; // 현재 수평 스크롤 값
-  y: number; // 현재 수직 스크롤 값
+  x: number;
+  y: number;
 }
 
 export type ScrollDirection = 'up' | 'down' | 'left' | 'right' | 'none';
 
 export interface UseScrollPositionReturn {
-  /** 현재 스크롤 위치 */
   position: ScrollPosition;
 
-  /** 스크롤 방향 */
   direction: ScrollDirection;
 }
 
 export interface UseScrollPositionOptions {
-  /**
-   * 스크롤 이벤트 대상
-   * - 없으면 window
-   * - ref.current를 넣으면 해당 DOM 요소
-   */
   target?: React.RefObject<HTMLElement | null>;
-
-  /** 스크롤 이벤트 감지 지연 (ms) */
   throttleMs?: number;
-
-  /** 스크롤 시 호출되는 콜백 */
   onScroll?: (position: ScrollPosition, direction: ScrollDirection) => void;
 }
 
