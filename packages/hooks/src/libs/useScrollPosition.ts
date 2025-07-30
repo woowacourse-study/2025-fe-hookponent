@@ -27,8 +27,12 @@ export function useScrollPosition(options?: UseScrollPositionOptions): UseScroll
 
   const prevXRef = useRef(0);
   const prevYRef = useRef(0);
-
   const lastCall = useRef(0);
+
+  const onScrollRef = useRef(onScroll);
+  useEffect(() => {
+    onScrollRef.current = onScroll;
+  }, [onScroll]);
 
   const handleScroll = useCallback(() => {
     const now = Date.now();
@@ -40,14 +44,14 @@ export function useScrollPosition(options?: UseScrollPositionOptions): UseScroll
       y: prevYRef.current,
     });
 
-    onScroll?.(newPos, newDir);
+    onScrollRef.current?.(newPos, newDir);
 
     prevXRef.current = newPos.x;
     prevYRef.current = newPos.y;
     setPosition(newPos);
     setDirection(newDir);
     lastCall.current = now;
-  }, [onScroll, target, throttleMs]);
+  }, [target, throttleMs]);
 
   useEffect(() => {
     const initialPos = getScrollPosition(target?.current ?? window);
