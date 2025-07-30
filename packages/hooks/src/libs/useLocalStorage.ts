@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 type UseLocalStorageOptions<T> = {
   serializer?: (value: T) => string;
@@ -39,35 +39,51 @@ export function useLocalStorage<T>(
 ): useLocalStorageReturn<T> {
   const { serializer = JSON.stringify, deserializer = JSON.parse, autoInit = true } = options ?? {};
 
-  const [storedValue, setStoredValue] = useState<T>(() => storage.get(key, initialValue, deserializer));
+  const serializerRef = useRef(serializer);
+  const deserializerRef = useRef(deserializer);
+  const autoInitRef = useRef(autoInit);
+
+  const [storedValue, setStoredValue] = useState<T>(() => storage.get(key, initialValue, deserializerRef.current));
 
   const setValue = useCallback(
     (value: T | ((prev: T) => T)) => {
       setStoredValue((prev) => {
         const valueToStore = value instanceof Function ? value(prev) : value;
-        storage.set(key, valueToStore, serializer);
+        storage.set(key, valueToStore, serializerRef.current);
         return valueToStore;
       });
     },
-    [key, serializer]
+    [key]
   );
 
   const refresh = () => {
-    setStoredValue(storage.get(key, initialValue, deserializer));
+    setStoredValue(storage.get(key, initialValue, deserializerRef.current));
   };
 
   useEffect(() => {
-    if (!autoInit) return;
+    if (!autoInitRef.current) return;
 
     const existing = localStorage.getItem(key);
     if (existing === null) {
       try {
-        storage.set(key, initialValue, serializer);
+        storage.set(key, initialValue, serializerRef.current);
       } catch (error) {
         console.error('autoInit 저장 실패', error);
       }
     }
-  }, []);
+  }, [key, initialValue]);
+
+  useEffect(() => {
+    serializerRef.current = serializer;
+  }, [serializer]);
+
+  useEffect(() => {
+    deserializerRef.current = deserializer;
+  }, [deserializer]);
+
+  useEffect(() => {
+    autoInitRef.current = autoInit;
+  }, [autoInit]);
 
   return [storedValue, setValue, refresh] as const;
 }
