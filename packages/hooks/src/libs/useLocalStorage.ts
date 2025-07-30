@@ -49,7 +49,11 @@ export function useLocalStorage<T>(
     (value: T | ((prev: T) => T)) => {
       setStoredValue((prev) => {
         const valueToStore = value instanceof Function ? value(prev) : value;
-        storage.set(key, valueToStore, serializerRef.current);
+        if (valueToStore === null) {
+          storage.remove(key);
+        } else {
+          storage.set(key, valueToStore, serializerRef.current);
+        }
         return valueToStore;
       });
     },
