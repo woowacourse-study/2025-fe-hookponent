@@ -1,15 +1,13 @@
 import { useEffect, useRef } from 'react';
 
 export function useOutsideClick(callback: () => void) {
-  const elementSetRef = useRef<Set<HTMLElement>>(new Set());
+  const elementRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const handleDocumentClick = ({ target }: MouseEvent) => {
-      const elements = Array.from(elementSetRef.current);
+      const element = elementRef.current;
 
-      const isOutsideClick = elements.every((element) => !element.contains(target as Node));
-
-      if (isOutsideClick && elements.length > 0) {
+      if (element && !element.contains(target as Node)) {
         callback();
       }
     };
@@ -26,10 +24,10 @@ export function useOutsideClick(callback: () => void) {
       return;
     }
 
-    elementSetRef.current.add(element);
+    elementRef.current = element;
 
     return () => {
-      elementSetRef.current.delete(element);
+      elementRef.current = null;
     };
   };
 }
