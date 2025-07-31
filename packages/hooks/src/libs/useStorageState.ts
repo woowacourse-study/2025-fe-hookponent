@@ -1,39 +1,40 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-type UseLocalStorageOptions<T> = {
+type UseStorageStateOptions<T> = {
   serializer?: (value: T) => string;
   deserializer?: (value: string) => T;
   autoInit?: boolean;
   type?: 'local' | 'session';
 };
 
-type useLocalStorageReturn<T> = [storedValue: T, setValue: (storedValue: T | ((prev: T) => T)) => void];
+type useStorageStateReturn<T> = [storedValue: T, setValue: (storedValue: T | ((prev: T) => T)) => void];
 
 /**
- * useLocalStorage 훅은 localStorage에 상태를 저장하고 동기화하는 상태 관리 훅입니다.
+ * `useStorageState` 훅은 `localStorage` 또는 `sessionStorage`에 상태를 저장하고 동기화하는 상태 관리 훅입니다.
  *
- * - 상태를 저장하면 localStorage에 자동으로 반영됩니다.
- * - 새로고침 후에도 저장된 값을 유지하며, 기본값은 값이 없을 경우에만 사용됩니다.
- * - 상태를 외부에서 변경한 경우, `refresh()`를 통해 강제로 동기화할 수 있습니다.
+ * - 상태를 변경하면 지정된 Storage (`localStorage` 또는 `sessionStorage`)에 자동으로 반영됩니다.
+ * - 새로고침 이후에도 저장된 값을 유지하며, 값이 존재하지 않을 경우 `initialValue`가 사용됩니다.
+ * - 다른 탭 또는 창에서 해당 키가 변경될 경우 자동으로 상태를 동기화합니다.
  *
- * @param {string} key localStorage에 저장할 키
- * @param {T} initialValue localStorage에 값이 없을 때 사용할 초기값
- * @param {UseLocalStorageOptions<T>} [options] 직렬화, 역직렬화 방식 및 초기 저장 여부 설정
- * @param {boolean} [options.autoInit=true] localStorage에 값이 없을 경우 초기값을 자동 저장할지 여부
- * @param {(value: T) => string} [options.serializer] 커스텀 직렬화 함수 (기본값: JSON.stringify)
- * @param {(value: string) => T} [options.deserializer] 커스텀 역직렬화 함수 (기본값: JSON.parse)
+ * @template T 저장할 상태의 타입
+ * @param {string} key - Storage에 저장할 키 값
+ * @param {T} initialValue - 저장된 값이 없을 경우 사용할 초기값
+ * @param {UseLocalStorageOptions<T>} [options] - 직렬화/역직렬화 함수, 자동 초기화 여부, Storage 타입을 설정하는 옵션 객체
+ * @param {(value: T) => string} [options.serializer] - 값을 문자열로 변환하는 함수 (기본값: JSON.stringify)
+ * @param {(value: string) => T} [options.deserializer] - 문자열을 원래 값으로 변환하는 함수 (기본값: JSON.parse)
+ * @param {boolean} [options.autoInit=true] - 초기 렌더 시 저장된 값이 없으면 `initialValue`를 자동 저장할지 여부
+ * @param {'local' | 'session'} [options.type='local'] - 사용할 Storage 종류. 'local'은 localStorage, 'session'은 sessionStorage를 사용
  *
  * @returns {[T, (value: T | ((prev: T) => T)) => void, () => void]}
- * - [0]: 현재 상태 값
- * - [1]: 상태를 업데이트하고 localStorage에 저장하는 setter
- * - [2]: localStorage에서 최신 값을 가져와 상태를 수동으로 동기화하는 refresh 함수
+ * - `[0]`: 현재 상태 값
+ * - `[1]`: 상태를 업데이트하고 Storage에 저장하는 setter 함수
  */
 
-export function useLocalStorage<T>(
+export function useStorageState<T>(
   key: string,
   initialValue: T,
-  options?: UseLocalStorageOptions<T>
-): useLocalStorageReturn<T> {
+  options?: UseStorageStateOptions<T>
+): useStorageStateReturn<T> {
   const { serializer, deserializer, autoInit = true, type = 'local' } = options ?? {};
 
   const storage = useRef(type === 'local' ? localStorageObj : sessionStorageObj);
