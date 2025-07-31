@@ -4,6 +4,7 @@ type UseLocalStorageOptions<T> = {
   serializer?: (value: T) => string;
   deserializer?: (value: string) => T;
   autoInit?: boolean;
+  type?: 'local' | 'session';
 };
 
 type useLocalStorageReturn<T> = [storedValue: T, setValue: (storedValue: T | ((prev: T) => T)) => void];
@@ -33,22 +34,26 @@ export function useLocalStorage<T>(
   initialValue: T,
   options?: UseLocalStorageOptions<T>
 ): useLocalStorageReturn<T> {
-  const { serializer, deserializer, autoInit = true } = options ?? {};
+  const { serializer, deserializer, autoInit = true, type = 'local' } = options ?? {};
+
+  const storage = useRef(type === 'local' ? localStorageObj : sessionStorageObj);
 
   const serializerRef = useRef(serializer);
   const deserializerRef = useRef(deserializer);
   const autoInitRef = useRef(autoInit);
 
-  const [storedValue, setStoredValue] = useState<T>(() => storage.get(key, initialValue, deserializerRef.current));
+  const [storedValue, setStoredValue] = useState<T>(() =>
+    storage.current.get(key, initialValue, deserializerRef.current)
+  );
 
   const setValue = useCallback(
     (value: T | ((prev: T) => T)) => {
       setStoredValue((prev) => {
         const valueToStore = value instanceof Function ? value(prev) : value;
         if (valueToStore === null) {
-          storage.remove(key);
+          storage.current.remove(key);
         } else {
-          storage.set(key, valueToStore, serializerRef.current);
+          storage.current.set(key, valueToStore, serializerRef.current);
         }
         return valueToStore;
       });
@@ -59,7 +64,7 @@ export function useLocalStorage<T>(
   //외부에서 상태 변경되었을 때, 해당 로컬스토리지의 값으로 상태를 반영해준다.
   useEffect(() => {
     const storageHandler = (event: StorageEvent) => {
-      if (event.key === key) setValue(storage.get(key));
+      if (event.key === key) setValue(storage.current.get(key));
     };
 
     window.addEventListener('storage', storageHandler);
@@ -70,15 +75,15 @@ export function useLocalStorage<T>(
   useEffect(() => {
     if (!autoInitRef.current) return;
 
-    const existing = localStorage.getItem(key);
+    const existing = type === 'local' ? localStorage.getItem(key) : sessionStorage.getItem(key);
     if (existing === null) {
       try {
-        storage.set(key, initialValue, serializerRef.current);
+        storage.current.set(key, initialValue, serializerRef.current);
       } catch (error) {
         console.error('autoInit 저장 실패', error);
       }
     }
-  }, [key, initialValue]);
+  }, [key, initialValue, type]);
 
   useEffect(() => {
     serializerRef.current = serializer;
@@ -95,7 +100,7 @@ export function useLocalStorage<T>(
   return [storedValue, setValue] as const;
 }
 
-const storage = {
+const localStorageObj = {
   get<T>(key: string, defaultValue?: T, deserializer?: (value: string) => T): T {
     const parse = deserializer ?? JSON.parse;
     try {
@@ -122,6 +127,37 @@ const storage = {
       localStorage.removeItem(key);
     } catch (error) {
       console.error('localStorage removeItem 오류', error);
+    }
+  },
+};
+
+const sessionStorageObj = {
+  get<T>(key: string, defaultValue?: T, deserializer?: (value: string) => T): T {
+    const parse = deserializer ?? JSON.parse;
+    try {
+      const item = sessionStorage.getItem(key);
+      return item ? parse(item) : defaultValue || null;
+    } catch (error) {
+      console.error('sessionStorage getItem 오류', error);
+      return defaultValue;
+    }
+  },
+
+  set<T>(key: string, value: T, serializer?: (value: T) => string): void {
+    const stringify = serializer ?? JSON.stringify;
+
+    try {
+      sessionStorage.setItem(key, stringify(value));
+    } catch (error) {
+      console.error('sessionStorage setItem 오류', error);
+    }
+  },
+
+  remove(key: string): void {
+    try {
+      sessionStorage.removeItem(key);
+    } catch (error) {
+      console.error('sessionStorage removeItem 오류', error);
     }
   },
 };
