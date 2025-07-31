@@ -2,14 +2,17 @@
 
 `localStorage` 또는 `sessionStorage`에 상태를 저장하고 동기화할 수 있는 커스텀 React Hook입니다.
 
-페이지를 새로고침하거나 다른 탭에서 저장소가 변경되더라도 상태가 유지되거나 자동 동기화되며, 초기값 저장과 직렬화 옵션도 지원합니다.
+- 페이지를 새로고침하거나 이동해도 상태가 유지됩니다.
+- 다른 탭이나 창에서 동일 키의 Storage 값이 변경되면 해당 변경 사항이 자동으로 상태에 반영됩니다.
+- 필요 시 refresh() 함수를 통해 수동으로 Storage 값을 다시 불러올 수 있습니다.
+- 초기값 저장 여부, 직렬화/역직렬화 함수도 유연하게 설정할 수 있습니다.
 
 ---
 
 ## 🔗 사용법
 
 ```tsx
-const [value, setValue] = useStorageState(key, initialValue, options);
+const [value, setValue, refresh] = useStorageState(key, initialValue, options);
 ```
 
 ---
@@ -37,38 +40,63 @@ const [value, setValue] = useStorageState(key, initialValue, options);
 
 ## 🔁 반환값
 
-`[value, setValue]`
+`[value, setValue, refresh]`
 
-| 인덱스 | 이름       | 타입                                   | 설명                               |
-| ------ | ---------- | -------------------------------------- | ---------------------------------- |
-| `0`    | `value`    | `T`                                    | 현재 상태값                        |
-| `1`    | `setValue` | `(value: T \| (prev: T) => T) => void` | 상태를 업데이트하고 Storage에 저장 |
+| 인덱스 | 이름       | 타입                                   | 설명                                            |
+| ------ | ---------- | -------------------------------------- | ----------------------------------------------- |
+| `0`    | `value`    | `T`                                    | 현재 상태값                                     |
+| `1`    | `setValue` | `(value: T \| (prev: T) => T) => void` | 상태를 업데이트하고 Storage에 저장              |
+| `2`    | `refresh`  | `() => void`                           | Storage의 최신 값을 수동으로 불러와 상태를 갱신 |
 
 ---
 
 ## ✅ 예시
 
+### 기본 예시
+
 ```tsx
 import { useStorageState } from 'hookdle';
 
 function ThemeToggle() {
-  const [theme, setTheme] = useStorageState<'light' | 'dark'>('theme', 'light');
+  const [theme, setTheme, refreshTheme] = useStorageState<'light' | 'dark'>('theme', 'light');
 
   return (
     <>
       <button onClick={() => setTheme('light')}>라이트 모드</button>
       <button onClick={() => setTheme('dark')}>다크 모드</button>
+      <button onClick={refreshTheme}>스토리지에서 새로고침</button>
       <div>현재 테마: {theme}</div>
     </>
   );
 }
 ```
 
+### localStorage를 외부에서 직접 수정한 경우
+
+```tsx
+function ExternalStorageUpdate() {
+  const [value, , refresh] = useStorageState<number>('hi', 0);
+
+  return (
+    <button
+      onClick={() => {
+        localStorage.setItem('hi', JSON.stringify(10)); // 직접 수정
+        refresh(); // 수동으로 상태 갱신
+      }}
+    >
+      값 강제 동기화: {value}
+    </button>
+  );
+}
+```
+
+localStorage.setItem(...)과 같이 훅 외부에서 Storage를 직접 수정한 경우, refresh()를 호출해야 상태가 반영됩니다.
+
 ---
 
 ## 💡 만약 이 훅이 없다면?
 
-직접 `localStorage`에 접근해 상태를 초기화하고, `useState`, `useEffect`를 조합해야 합니다.
+직접 localStorage에 접근해 상태를 초기화하고, useState, useEffect를 조합해야 합니다. 또한 탭 간 동기화나 수동 갱신 기능도 직접 구현해야 합니다!
 
 ```tsx
 function ThemeToggle() {
@@ -81,6 +109,17 @@ function ThemeToggle() {
     localStorage.setItem('theme', JSON.stringify(theme));
   }, [theme]);
 
+  // 다른 탭에서 변경 감지 (수동 구현 필요)
+  useEffect(() => {
+    const handler = (e: StorageEvent) => {
+      if (e.key === 'theme' && e.newValue) {
+        setTheme(JSON.parse(e.newValue));
+      }
+    };
+    window.addEventListener('storage', handler);
+    return () => window.removeEventListener('storage', handler);
+  }, []);
+
   return (
     <>
       <button onClick={() => setTheme('light')}>라이트 모드</button>
@@ -91,4 +130,4 @@ function ThemeToggle() {
 }
 ```
 
-이 방식은 코드 중복이 많고, 직렬화/역직렬화 오류나 탭 간 동기화가 자동으로 되지 않기 때문에 유지 관리에 불리합니다.
+이처럼 useStorageState를 사용하면 저장소 관리, 직렬화, 동기화까지 간편하게 처리할 수 있습니다.
