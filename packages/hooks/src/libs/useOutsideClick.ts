@@ -13,7 +13,7 @@ export function useOutsideClick(callback: () => void) {
       const element = elementRef.current;
 
       if (element && !element.contains(target as Node)) {
-        callback();
+        callbackRef.current();
       }
     };
 
