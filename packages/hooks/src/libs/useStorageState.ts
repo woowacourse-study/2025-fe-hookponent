@@ -7,7 +7,11 @@ type UseStorageStateOptions<T> = {
   type?: 'local' | 'session';
 };
 
-type useStorageStateReturn<T> = [storedValue: T, setValue: (storedValue: T | ((prev: T) => T)) => void];
+type useStorageStateReturn<T> = [
+  storedValue: T,
+  setValue: (storedValue: T | ((prev: T) => T)) => void,
+  refresh: () => void,
+];
 
 /**
  * `useStorageState` 훅은 `localStorage` 또는 `sessionStorage`에 상태를 저장하고 동기화하는 상태 관리 훅입니다.
@@ -15,11 +19,12 @@ type useStorageStateReturn<T> = [storedValue: T, setValue: (storedValue: T | ((p
  * - 상태를 변경하면 지정된 Storage (`localStorage` 또는 `sessionStorage`)에 자동으로 반영됩니다.
  * - 새로고침 이후에도 저장된 값을 유지하며, 값이 존재하지 않을 경우 `initialValue`가 사용됩니다.
  * - 다른 탭 또는 창에서 해당 키가 변경될 경우 자동으로 상태를 동기화합니다.
+ * - 외부에서 storage 값을 직접 수정한 경우 수동으로 동기화할 수 있는 `refresh` 함수도 제공합니다.
  *
  * @template T 저장할 상태의 타입
  * @param {string} key - Storage에 저장할 키 값
  * @param {T} initialValue - 저장된 값이 없을 경우 사용할 초기값
- * @param {UseLocalStorageOptions<T>} [options] - 직렬화/역직렬화 함수, 자동 초기화 여부, Storage 타입을 설정하는 옵션 객체
+ * @param {UseStorageStateOptions<T>} [options] - 직렬화/역직렬화 함수, 자동 초기화 여부, Storage 타입을 설정하는 옵션 객체
  * @param {(value: T) => string} [options.serializer] - 값을 문자열로 변환하는 함수 (기본값: JSON.stringify)
  * @param {(value: string) => T} [options.deserializer] - 문자열을 원래 값으로 변환하는 함수 (기본값: JSON.parse)
  * @param {boolean} [options.autoInit=true] - 초기 렌더 시 저장된 값이 없으면 `initialValue`를 자동 저장할지 여부
@@ -28,6 +33,7 @@ type useStorageStateReturn<T> = [storedValue: T, setValue: (storedValue: T | ((p
  * @returns {[T, (value: T | ((prev: T) => T)) => void, () => void]}
  * - `[0]`: 현재 상태 값
  * - `[1]`: 상태를 업데이트하고 Storage에 저장하는 setter 함수
+ * - `[2]`: 저장소의 최신 값을 강제로 다시 읽어오는 refresh 함수
  */
 
 export function useStorageState<T>(
@@ -61,6 +67,10 @@ export function useStorageState<T>(
     },
     [key]
   );
+
+  const refresh = useCallback(() => {
+    setStoredValue(storage.current.get(key, undefined, deserializerRef.current));
+  }, [key]);
 
   //외부에서 상태 변경되었을 때, 해당 로컬스토리지의 값으로 상태를 반영해준다.
   useEffect(() => {
@@ -98,7 +108,7 @@ export function useStorageState<T>(
     autoInitRef.current = autoInit;
   }, [autoInit]);
 
-  return [storedValue, setValue] as const;
+  return [storedValue, setValue, refresh] as const;
 }
 
 const localStorageObj = {
