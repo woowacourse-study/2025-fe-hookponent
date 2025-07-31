@@ -1,5 +1,5 @@
-import { useEffect, useRef } from 'react';
 import { render, fireEvent } from '@testing-library/react';
+import { useEffect, useRef } from 'react';
 import { useOutsideClick } from './useOutsideClick';
 
 describe('useOutsideClick', () => {
@@ -26,7 +26,11 @@ describe('useOutsideClick', () => {
       useEffect(() => {
         if (ref.current) {
           const unregister = register(ref.current);
-          return () => unregister?.();
+          return () => {
+            if (typeof unregister === 'function') {
+              unregister();
+            }
+          };
         }
       }, [register]);
 
@@ -52,7 +56,11 @@ describe('useOutsideClick', () => {
       useEffect(() => {
         if (ref.current) {
           const unregister = register(ref.current);
-          return () => unregister?.();
+          return () => {
+            if (typeof unregister === 'function') {
+              unregister();
+            }
+          };
         }
       }, [register]);
 
@@ -79,8 +87,14 @@ describe('useOutsideClick', () => {
     const handleOutsideClick = jest.fn();
 
     function TestComponent() {
-      useOutsideClick(handleOutsideClick);
-      return <div data-testid="outside">Outside</div>;
+      const register = useOutsideClick(handleOutsideClick);
+      return (
+        <div>
+          <button type="button" data-testid="outside" onClick={() => register(null)}>
+            Outside
+          </button>
+        </div>
+      );
     }
 
     const { getByTestId } = render(<TestComponent />);
@@ -94,12 +108,10 @@ describe('useOutsideClick', () => {
 
     function TestComponent() {
       const register = useOutsideClick(callback);
-
       useEffect(() => {
         const result = register(null);
         expect(result).toBeUndefined();
       }, [register]);
-
       return <div>Test</div>;
     }
 
