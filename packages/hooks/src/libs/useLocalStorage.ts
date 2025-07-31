@@ -6,11 +6,7 @@ type UseLocalStorageOptions<T> = {
   autoInit?: boolean;
 };
 
-type useLocalStorageReturn<T> = [
-  storedValue: T,
-  setValue: (storedValue: T | ((prev: T) => T)) => void,
-  refresh: () => void,
-];
+type useLocalStorageReturn<T> = [storedValue: T, setValue: (storedValue: T | ((prev: T) => T)) => void];
 
 /**
  * useLocalStorage 훅은 localStorage에 상태를 저장하고 동기화하는 상태 관리 훅입니다.
@@ -60,10 +56,6 @@ export function useLocalStorage<T>(
     [key]
   );
 
-  const refresh = () => {
-    setStoredValue(storage.get(key, initialValue, deserializerRef.current));
-  };
-
   //외부에서 상태 변경되었을 때, 해당 로컬스토리지의 값으로 상태를 반영해준다.
   useEffect(() => {
     const storageHandler = (event: StorageEvent) => {
@@ -100,7 +92,7 @@ export function useLocalStorage<T>(
     autoInitRef.current = autoInit;
   }, [autoInit]);
 
-  return [storedValue, setValue, refresh] as const;
+  return [storedValue, setValue] as const;
 }
 
 const storage = {

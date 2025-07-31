@@ -29,20 +29,6 @@ describe('`useLocalStorage`', () => {
     expect(localStorage.getItem('key')).toBe(JSON.stringify('newValue'));
   });
 
-  it('refresh를 호출하면 localStorage 값을 상태에 반영한다.', () => {
-    localStorage.setItem('key', JSON.stringify('fromStorage'));
-
-    const { result } = renderHook(() => useLocalStorage('key', 'default'));
-    const [, , refresh] = result.current;
-
-    act(() => {
-      refresh();
-    });
-
-    const [value] = result.current;
-    expect(value).toBe('fromStorage');
-  });
-
   it('serializer/deserializer를 커스터마이징할 수 있다.', () => {
     const serializer = (v: number[]) => v.join(',');
     const deserializer = (v: string) => v.split(',').map(Number);
