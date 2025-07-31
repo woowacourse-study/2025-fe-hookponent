@@ -106,7 +106,7 @@ const localStorageObj = {
     const parse = deserializer ?? JSON.parse;
     try {
       const item = localStorage.getItem(key);
-      return item ? parse(item) : defaultValue || null;
+      return item ? parse(item) : (defaultValue ?? null);
     } catch (error) {
       console.error('localStorage getItem 오류', error);
       return defaultValue;
@@ -137,7 +137,7 @@ const sessionStorageObj = {
     const parse = deserializer ?? JSON.parse;
     try {
       const item = sessionStorage.getItem(key);
-      return item ? parse(item) : defaultValue || null;
+      return item ? parse(item) : (defaultValue ?? null);
     } catch (error) {
       console.error('sessionStorage getItem 오류', error);
       return defaultValue;
