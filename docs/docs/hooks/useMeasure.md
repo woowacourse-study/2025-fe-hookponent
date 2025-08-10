@@ -11,7 +11,7 @@
 ## 🔗 사용법
 
 ```tsx
-const [ref, size] = useMeasure<HTMLDivElement>();
+const { ref, size } = useMeasure<HTMLDivElement>();
 ```
 
 ---
@@ -24,12 +24,12 @@ const [ref, size] = useMeasure<HTMLDivElement>();
 
 ## 🔁 반환값
 
-`[ref, size]`
+`{ref, size}`
 
-| 인덱스 | 이름   | 타입                                | 설명                                                        |
-| ------ | ------ | ----------------------------------- | ----------------------------------------------------------- |
-| `0`    | `ref`  | `RefObject<T>`                      | 크기를 측정할 DOM 요소에 연결할 `ref` 객체                  |
-| `1`    | `size` | `{ width: number; height: number }` | 측정된 요소의 현재 크기. `ref`가 없을 경우 window 크기 반환 |
+| 키     | 타입                                | 설명                                                        |
+| ------ | ----------------------------------- | ----------------------------------------------------------- |
+| `ref`  | `RefObject<T>`                      | 크기를 측정할 DOM 요소에 연결할 `ref` 객체                  |
+| `size` | `{ width: number; height: number }` | 측정된 요소의 현재 크기. `ref`가 없을 경우 window 크기 반환 |
 
 ---
 
@@ -40,7 +40,7 @@ const [ref, size] = useMeasure<HTMLDivElement>();
 - 예시: `HTMLDivElement`, `HTMLTextAreaElement`, `HTMLCanvasElement` 등
 
 ```tsx
-const [ref, size] = useMeasure<HTMLTextAreaElement>();
+const { ref, size } = useMeasure<HTMLTextAreaElement>();
 ```
 
 ---
@@ -51,7 +51,7 @@ const [ref, size] = useMeasure<HTMLTextAreaElement>();
 
 ```tsx
 function Component() {
-  const [ref, size] = useMeasure<HTMLDivElement>();
+  const { ref, size } = useMeasure<HTMLDivElement>();
 
   return (
     <div ref={ref} style={{ resize: 'both', overflow: 'auto' }}>
@@ -66,7 +66,7 @@ function Component() {
 
 ```tsx
 function FullscreenLayout() {
-  const [, size] = useMeasure();
+  const { size } = useMeasure();
 
   return (
     <div>
