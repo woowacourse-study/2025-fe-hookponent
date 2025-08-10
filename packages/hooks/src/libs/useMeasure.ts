@@ -1,6 +1,6 @@
 import { RefObject, useEffect, useRef, useState } from 'react';
 
-type useMeasureReturn<T> = [RefObject<T>, { width: number; height: number }];
+type useMeasureReturn<T> = { ref: RefObject<T>; size: { width: number; height: number } };
 
 /**
  * `useMeasure` 훅은 요소의 크기(`width`, `height`)를 측정하고,
@@ -13,18 +13,18 @@ type useMeasureReturn<T> = [RefObject<T>, { width: number; height: number }];
  *
  * @template T - 크기를 측정할 HTML 요소 타입 (예: HTMLDivElement, HTMLTextAreaElement 등)
  *
- * @returns {[RefObject<T>, { width: number; height: number }]}
- * - `[0]`: 크기를 측정할 DOM 요소에 연결할 `ref` 객체
- * - `[1]`: 해당 요소 또는 윈도우의 현재 `{ width, height }` 정보
+ * @returns {{ref:RefObject<T>, size:{ width: number; height: number }}}
+ * - `ref`: 크기를 측정할 DOM 요소에 연결할 `ref` 객체
+ * - `size`: 해당 요소 또는 윈도우의 현재 `{ width, height }` 정보
  *
  * @example
- * const [ref, size] = useMeasure<HTMLDivElement>();
+ * const {ref, size} = useMeasure<HTMLDivElement>();
  * return <div ref={ref}>너비: {size.width}px</div>;
  *
  * @example
  * // ref를 연결하지 않으면 window 크기를 추적합니다.
- * const [, viewport] = useMeasure();
- * console.log(viewport.width); // window.innerWidth
+ * const {size} = useMeasure();
+ * console.log(size.width); // window.innerWidth
  */
 
 const useMeasure = <T extends HTMLElement>(): useMeasureReturn<T> => {
@@ -58,7 +58,7 @@ const useMeasure = <T extends HTMLElement>(): useMeasureReturn<T> => {
     };
   }, []);
 
-  return [ref, state];
+  return { ref, size: state };
 };
 
 export default useMeasure;
