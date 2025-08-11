@@ -103,9 +103,11 @@ export function useEventListener(
     const targetEl = isRefObject<EventTargetLike>(target) ? target.current : target;
     if (!targetEl || !targetEl.addEventListener) return;
 
-    targetEl.addEventListener(type, listenerRef.current, options);
+    const stable = (e: Event) => listenerRef.current(e);
+
+    targetEl.addEventListener(type, stable, options);
     return () => {
-      targetEl.removeEventListener(type, listenerRef.current, options);
+      targetEl.removeEventListener(type, stable, options);
     };
   }, [target, type, options]);
 }
