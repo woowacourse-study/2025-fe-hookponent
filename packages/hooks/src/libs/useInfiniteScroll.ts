@@ -5,8 +5,6 @@ export interface UseInfiniteScrollOptions {
   options?: IntersectionObserverInit;
 }
 
-
-
 /**
  * IntersectionObserver를 이용해 무한 스크롤 기능을 제공하는 커스텀 훅
  *
@@ -19,7 +17,7 @@ export interface UseInfiniteScrollOptions {
 export function useInfiniteScroll({
   callback,
   options = { root: null, rootMargin: '0px', threshold: 1.0 },
-}: UseInfiniteScrollOptions) {
+}: UseInfiniteScrollOptions): [React.RefObject<HTMLDivElement>, boolean] {
   const targetRef = useRef<HTMLDivElement | null>(null);
 
   const [loading, setLoading] = useState(false);
@@ -42,7 +40,7 @@ export function useInfiniteScroll({
     return () => {
       observer.disconnect();
     };
-  }, [callback, options, loading]);
+  }, [callback, options]);
 
   return [targetRef, loading];
 }
