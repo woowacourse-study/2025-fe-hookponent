@@ -38,9 +38,12 @@ interface UseFunnelReturn<S extends readonly string[]> {
  * - `prev`: 이전 스텝으로 이동하는 함수 (첫 스텝에서는 유지, history 옵션이 true면 `window.history.back()` 동작)
  * - `setStep`: 특정 스텝으로 직접 이동하는 함수
  */
-const useFunnel = <S extends readonly string[]>(steps: S, options: UseFunnelOptions): UseFunnelReturn<S> => {
+const useFunnel = <S extends readonly string[]>(
+  steps: S,
+  options: UseFunnelOptions = { history: true }
+): UseFunnelReturn<S> => {
   type T = S[number];
-  const historyEnabled = !!options.history;
+  const historyEnabled = options.history;
   const stepsMutable = useMemo(() => [...steps], [steps]);
 
   const { Funnel, step, setStep, stepPrev, stepNext } = useInitialFunnel<T>(stepsMutable);
