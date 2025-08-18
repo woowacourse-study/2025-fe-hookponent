@@ -1,4 +1,6 @@
 export * from './libs/useArrayState';
+export * from './libs/useDebounce';
+export * from './libs/useDarkMode';
 export * from './libs/useBooleanState';
 export * from './libs/useDebounce';
 export * from './libs/useStorageState';
