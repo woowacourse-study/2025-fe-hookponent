@@ -113,15 +113,3 @@ function RotatingImage() {
   return <Motion.img ref={imgRef} src="/logo.png" animate={{ rotate: 360 }} transition={{ duration: 2 }} />;
 }
 ```
-
-```
-
-이 문서는 Motion 컴포넌트의:
-1. 기본 소개
-2. 사용법
-3. 매개변수 상세 설명
-4. 지원하는 컴포넌트 목록
-5. 다양한 사용 예시
-
-를 포함하고 있습니다. 추가하거나 수정할 부분이 있다면 말씀해 주세요!
-```
