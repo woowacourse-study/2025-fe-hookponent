@@ -1,4 +1,6 @@
 export * from './libs/useArrayState';
+export * from './libs/useDebounce';
+export * from './libs/useDarkMode';
 export * from './libs/useBooleanState';
 export * from './libs/useDebounce';
 export * from './libs/useStorageState';
@@ -7,3 +9,6 @@ export * from './libs/useOutsideClick';
 export * from './libs/useIdle';
 export * from './libs/useMeasure';
 export * from './libs/useMediaQuery';
+export * from './libs/useCounter';
+export * from './libs/useEventListener';
+export * from './libs/useLockBodyScroll';
