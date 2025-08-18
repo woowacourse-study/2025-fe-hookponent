@@ -9,3 +9,6 @@ export * from './libs/useOutsideClick';
 export * from './libs/useIdle';
 export * from './libs/useMeasure';
 export * from './libs/useMediaQuery';
+export * from './libs/useCounter';
+export * from './libs/useEventListener';
+export * from './libs/useLockBodyScroll';
