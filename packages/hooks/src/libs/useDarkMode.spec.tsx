@@ -5,7 +5,7 @@ const LOCAL_STORAGE_KEY = 'darkMode';
 
 // 테스트용 컴포넌트
 function DarkModeTestComponent() {
-  const [darkMode, toggleDarkMode] = useDarkMode();
+  const { darkMode, toggleDarkMode } = useDarkMode();
 
   return (
     <div>
