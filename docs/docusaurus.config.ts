@@ -5,7 +5,7 @@ import { themes as prismThemes } from 'prism-react-renderer';
 // Node.js 환경에서 실행되므로 브라우저 API나 JSX는 사용하지 마세요
 
 const config: Config = {
-  title: 'hookdle', // 사이트 제목
+  title: 'hookponent', // 사이트 제목
   favicon: 'img/favicon.ico', // 파비콘 경로
 
   future: {
@@ -43,7 +43,7 @@ const config: Config = {
 
     // 상단 네비게이션 바 설정
     navbar: {
-      title: 'hookdle',
+      title: 'hookponent',
       logo: {
         alt: 'hookdle 로고',
         src: 'img/logo.svg',
