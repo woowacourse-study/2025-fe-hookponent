@@ -17,7 +17,22 @@
 }
 
 .buttons {
+  margin-top: 2rem;
   display: flex;
-  align-items: center;
+  gap: 1rem;
   justify-content: center;
+}
+
+html[data-theme='dark'] .heroBanner {
+  background-color: #111;
+  color: #f5f5f5;
+}
+
+html[data-theme='dark'] .buttons button {
+  background-color: #333;
+  color: #fff;
+}
+
+html[data-theme='dark'] .buttons button:hover {
+  background-color: #555;
 }
