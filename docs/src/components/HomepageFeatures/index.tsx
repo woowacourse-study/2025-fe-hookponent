@@ -11,42 +11,31 @@ type FeatureItem = {
 
 const FeatureList: FeatureItem[] = [
   {
-    title: 'Easy to Use',
-    Svg: require('@site/static/img/undraw_docusaurus_mountain.svg').default,
+    title: '📦 NPM Ready',
+    Svg: require('@site/static/img/Package.svg').default,
     description: (
       <>
-        Docusaurus was designed from the ground up to be easily installed and used to get your
-        website up and running quickly.
+        <p>별도 설정 없이, 한 줄 설치로 바로 프로젝트에 적용할 수 있습니다.</p>
       </>
     ),
   },
   {
-    title: 'Focus on What Matters',
-    Svg: require('@site/static/img/undraw_docusaurus_tree.svg').default,
-    description: (
-      <>
-        Docusaurus lets you focus on your docs, and we&apos;ll do the chores. Go ahead and move your
-        docs into the <code>docs</code> directory.
-      </>
-    ),
+    title: '⚡ Developer Friendly',
+    Svg: require('@site/static/img/Zap.svg').default,
+    description: <>Hookponent는 타입 안정성까지 보장하는 개발자 친화적인 유틸 훅 라이브러리입니다.</>,
   },
   {
-    title: 'Powered by React',
-    Svg: require('@site/static/img/undraw_docusaurus_react.svg').default,
-    description: (
-      <>
-        Extend or customize your website layout by reusing React. Docusaurus can be extended while
-        reusing the same header and footer.
-      </>
-    ),
+    title: '🧩 Reusable Components',
+    Svg: require('@site/static/img/Puzzle.svg').default,
+    description: <>Hookponent는 자주 쓰는 UI 컴포넌트와 훅을 제공하여 팀 프로젝트 전반에서 재사용성을 극대화합니다.</>,
   },
 ];
 
 function Feature({ title, Svg, description }: FeatureItem) {
   return (
-    <div className={clsx('col col--4')}>
+    <div className={clsx('col col--4', styles.featureCard)}>
       <div className="text--center">
-        <Svg className={styles.featureSvg} role="img" />
+        <Svg className={styles.featureIcon} />
       </div>
       <div className="text--center padding-horiz--md">
         <Heading as="h3">{title}</Heading>
@@ -55,7 +44,6 @@ function Feature({ title, Svg, description }: FeatureItem) {
     </div>
   );
 }
-
 export default function HomepageFeatures(): ReactNode {
   return (
     <section className={styles.features}>
