@@ -7,7 +7,7 @@
 ## 🔗 사용법
 
 ```tsx
-const [targetRef, loading] = useInfiniteScroll(options);
+const { targetRef, loading } = useInfiniteScroll(options);
 ```
 
 ### 매개변수(options)
@@ -22,7 +22,7 @@ const [targetRef, loading] = useInfiniteScroll(options);
 
 ### 반환값
 
-- `targetRef: React.RefObject<HTMLDivElement>`
+- `targetRef: React.RefObject<T>`
   - 감시 대상에 연결할 ref 객체
 
 - `loading: boolean`
@@ -48,7 +48,7 @@ function InfiniteList() {
     });
   }, []);
 
-  const [targetRef, loading] = useInfiniteScroll({ callback: loadMore });
+  const { targetRef, loading } = useInfiniteScroll({ callback: loadMore });
 
   return (
     <div>
@@ -79,7 +79,7 @@ function CustomInfiniteScroll() {
     // 데이터 처리 로직
   };
 
-  const [targetRef, loading] = useInfiniteScroll({
+  const { targetRef, loading } = useInfiniteScroll({
     callback: loadData,
     options: {
       root: null,
@@ -123,7 +123,7 @@ function InfiniteScrollWithError() {
     }
   }, []);
 
-  const [targetRef, loading] = useInfiniteScroll({ callback: fetchItems });
+  const { targetRef, loading } = useInfiniteScroll({ callback: fetchItems });
 
   return (
     <div>
