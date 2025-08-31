@@ -11,14 +11,14 @@ export interface UseInfiniteScrollOptions {
  * @param {UseInfiniteScrollOptions} params 무한 스크롤 옵션
  * @param {() => void} params.callback 관찰 대상이 화면에 나타났을 때 실행할 콜백
  * @param {IntersectionObserverInit} [params.options] IntersectionObserver 설정 값 (선택)
- * @returns {React.RefObject<HTMLDivElement>} 감시 대상에 연결할 ref 객체
+ * @returns {React.RefObject<T>} 감시 대상에 연결할 ref 객체
  */
 
-export function useInfiniteScroll({
+export function useInfiniteScroll<T extends HTMLElement>({
   callback,
   options = { root: null, rootMargin: '0px', threshold: 1.0 },
-}: UseInfiniteScrollOptions): [React.RefObject<HTMLDivElement>, boolean] {
-  const targetRef = useRef<HTMLDivElement | null>(null);
+}: UseInfiniteScrollOptions): { targetRef: React.RefObject<T>; loading: boolean } {
+  const targetRef = useRef<T | null>(null);
 
   const [loading, setLoading] = useState(false);
 
@@ -42,5 +42,5 @@ export function useInfiniteScroll({
     };
   }, [callback, options]);
 
-  return [targetRef, loading];
+  return { targetRef, loading };
 }
