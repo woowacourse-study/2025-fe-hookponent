@@ -5,7 +5,7 @@ import { themes as prismThemes } from 'prism-react-renderer';
 // Node.js 환경에서 실행되므로 브라우저 API나 JSX는 사용하지 마세요
 
 const config: Config = {
-  title: 'hookponent', // 사이트 제목
+  title: 'Hookponent', // 사이트 제목
   favicon: 'img/favicon.ico', // 파비콘 경로
 
   future: {
@@ -43,7 +43,7 @@ const config: Config = {
 
     // 상단 네비게이션 바 설정
     navbar: {
-      title: 'hookponent',
+      title: 'Hookponent',
       logo: {
         alt: 'hookdle 로고',
         src: 'img/hookponent-logo.svg',
@@ -57,11 +57,11 @@ const config: Config = {
         },
         {
           to: '/introduce',
-          label: '소개',
+          label: '기타',
           position: 'left',
         },
         {
-          href: 'https://github.com/facebook/docusaurus',
+          href: 'https://github.com/woowacourse-study/2025-fe-hookdle',
           label: 'GitHub',
           position: 'right',
         },
@@ -79,13 +79,21 @@ const config: Config = {
               label: '시작하기',
               to: '/docs/getStarted',
             },
+            {
+              label: 'hooks',
+              to: '/docs/hooks',
+            },
+            {
+              label: 'components',
+              to: '/docs/components',
+            },
           ],
         },
         {
-          title: '소개',
+          title: '기타',
           items: [
             {
-              label: '기여자',
+              label: '스터디 소개',
               to: '/introduce',
             },
           ],
@@ -95,12 +103,20 @@ const config: Config = {
           items: [
             {
               label: 'GitHub',
-              href: 'https://github.com/facebook/docusaurus',
+              href: 'https://github.com/woowacourse-study/2025-fe-hookdle',
+            },
+            {
+              label: 'npm (hookdle)',
+              href: 'https://www.npmjs.com/package/hookdle',
+            },
+            {
+              label: 'npm (componentdle)',
+              href: 'https://www.npmjs.com/package/componentdle',
             },
           ],
         },
       ],
-      copyright: `© ${new Date().getFullYear()} hookdle. Built with Docusaurus.`,
+      copyright: `© ${new Date().getFullYear()} hookdle. Built with woowacourse-7th.`,
     },
 
     // 코드 하이라이팅 테마 설정
