@@ -22,13 +22,19 @@ export function useInfiniteScroll<T extends HTMLElement>({
 
   const [loading, setLoading] = useState(false);
 
+  const callbackRef = useRef(callback);
+
+  useEffect(() => {
+    callbackRef.current = callback;
+  }, [callback]);
+
   useEffect(() => {
     if (!targetRef.current) return;
     const observer = new IntersectionObserver(async (entries) => {
       if (entries[0].isIntersecting && !loading) {
         setLoading(true);
         try {
-          await callback();
+          await callbackRef.current(); // ref로 감싼 최신 callback 호출
         } finally {
           setLoading(false);
         }
@@ -40,7 +46,7 @@ export function useInfiniteScroll<T extends HTMLElement>({
     return () => {
       observer.disconnect();
     };
-  }, [callback, options]);
+  }, [options]);
 
   return { targetRef, loading };
 }
