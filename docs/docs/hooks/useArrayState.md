@@ -40,6 +40,8 @@ const [value, controls] = useArrayState(initialArray);
 | `removeAt(index)`                  | 지정된 위치의 값을 제거합니다.                   |
 | `updateAt(index, value)`           | 지정된 위치의 값을 새로운 값으로 교체합니다.     |
 
+---
+
 ## ✅ 예시
 
 ```tsx

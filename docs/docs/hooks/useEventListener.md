@@ -19,6 +19,8 @@ useEventListener(target, type, listener, options);
 | `listener` | `(e: Event) => void`                          | 이벤트 발생 시 실행될 콜백 함수                       |
 | `options`  | `boolean \| AddEventListenerOptions` _(선택)_ | 이벤트 등록 옵션 (`capture`, `once`, `passive` 등)    |
 
+---
+
 ## ✅ 예시
 
 ### 1. window 리사이즈 이벤트
