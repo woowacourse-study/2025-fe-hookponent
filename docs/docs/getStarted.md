@@ -6,26 +6,6 @@ sidebar_position: 1
 
 Hookponent는 React 환경에서 사용할 수 있는 **훅(Hooks)과 컴포넌트 라이브러리**입니다.
 
-## 설치
-
-### npm
-
-```bash
-npm install hookponent
-```
-
-### yarn
-
-```bash
-yarn add hookponent
-```
-
-### pnpm
-
-```bash
-pnpm add hookponent
-```
-
 ## 업데이트된 훅포넌트
 
 Hookponent는 현재 다음과 같은 훅들을 제공합니다:
