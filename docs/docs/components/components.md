@@ -2,7 +2,9 @@
 sidebar_position: 3
 ---
 
-# components
+# component
+
+## componentdle
 
 ## 설치
 
@@ -54,30 +56,3 @@ const MyTypedComponent: React.FC = () => {
   );
 };
 ```
-
-## 지원 환경
-
-- **Node.js**: 최신 LTS 버전 권장
-- **React**: 16.8 이상
-- **TypeScript**: 내장 타입 선언 지원
-
-## 문제 해결
-
-### 일반적인 문제들
-
-1. **설치 오류 시**
-
-   ```bash
-   npm cache clean --force
-   npm install componentdle
-   ```
-
-2. **TypeScript 오류 시**
-   - 프로젝트의 `tsconfig.json`에서 `"moduleResolution": "node"` 설정 확인
-   - `node_modules/@types` 폴더에서 충돌하는 타입 정의 확인
-
-## 추가 리소스
-
-- [NPM 패키지 페이지](https://www.npmjs.com/package/componentdle)
-- React 공식 문서
-- TypeScript 공식 문서

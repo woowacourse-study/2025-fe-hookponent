@@ -4,6 +4,8 @@ sidebar_position: 2
 
 # hooks
 
+## hookdle
+
 React 애플리케이션에서 사용할 수 있는 커스텀 훅 라이브러리입니다.
 
 ## 설치
@@ -55,26 +57,3 @@ import {} from /* 훅 이름들 */ 'hookdle';
 - 📘 완전한 TypeScript 지원
 - 🔧 개발자 친화적인 API
 - 🎯 React 함수형 컴포넌트에 최적화
-
-## 요구사항
-
-- React 16.8.0 이상 (Hooks를 지원하는 버전)
-- Node.js (개발 환경)
-
-## 개발 환경 설정
-
-프로젝트에 hookdle을 추가한 후, React 컴포넌트에서 바로 사용할 수 있습니다:
-
-```jsx
-import React from 'react';
-import {} from /* 사용할 훅 */ 'hookdle';
-
-function MyComponent() {
-  // hookdle의 훅들을 여기서 사용
-
-  return <div>{/* 컴포넌트 JSX */}</div>;
-}
-
-export default MyComponent;
-```
-
