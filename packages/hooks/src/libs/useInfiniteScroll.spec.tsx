@@ -38,10 +38,9 @@ describe('useInfiniteScroll', () => {
     const callback = jest.fn();
     const { result } = renderHook(() => useInfiniteScroll({ callback }));
 
-    expect(result.current).toHaveLength(2);
-    expect(result.current[0]).toBeDefined();
-    expect(typeof result.current[1]).toBe('boolean');
-    expect(result.current[1]).toBe(false);
+    expect(result.current.targetRef).toBeDefined();
+    expect(typeof result.current.loading).toBe('boolean');
+    expect(result.current.loading).toBe(false);
   });
 
   it('IntersectionObserver 생성 및 observe 호출', async () => {
@@ -51,7 +50,7 @@ describe('useInfiniteScroll', () => {
     const mockElement = document.createElement('div');
 
     act(() => {
-      result.current[0].current = mockElement;
+      result.current.targetRef.current = mockElement;
     });
 
     // 리렌더링을 통해 useEffect 트리거
@@ -72,7 +71,7 @@ describe('useInfiniteScroll', () => {
     const mockElement = document.createElement('div');
 
     act(() => {
-      result.current[0].current = mockElement;
+      result.current.targetRef.current = mockElement;
     });
 
     rerender();
@@ -97,7 +96,7 @@ describe('useInfiniteScroll', () => {
     const mockElement = document.createElement('div');
 
     act(() => {
-      result.current[0].current = mockElement;
+      result.current.targetRef.current = mockElement;
     });
 
     rerender();
@@ -122,7 +121,7 @@ describe('useInfiniteScroll', () => {
     const mockElement = document.createElement('div');
 
     act(() => {
-      result.current[0].current = mockElement;
+      result.current.targetRef.current = mockElement;
     });
 
     rerender();
@@ -137,11 +136,11 @@ describe('useInfiniteScroll', () => {
       observerInstance.trigger([{ isIntersecting: true }]);
     });
 
-    expect(result.current[1]).toBe(true); // 로딩 상태가 true여야 함
+    expect(result.current.loading).toBe(true); // 로딩 상태가 true여야 함
 
     await waitFor(
       () => {
-        expect(result.current[1]).toBe(false); // 로딩 상태가 false로 변경되어야 함
+        expect(result.current.loading).toBe(false); // 로딩 상태가 false로 변경되어야 함
       },
       { timeout: 2000 }
     );
@@ -162,7 +161,7 @@ describe('useInfiniteScroll', () => {
     const mockElement = document.createElement('div');
 
     act(() => {
-      result.current[0].current = mockElement;
+      result.current.targetRef.current = mockElement;
     });
 
     rerender();
@@ -178,7 +177,7 @@ describe('useInfiniteScroll', () => {
       observerInstance.trigger([{ isIntersecting: true }]);
     });
 
-    expect(result.current[1]).toBe(true); // 로딩 중
+    expect(result.current.loading).toBe(true); // 로딩 중
 
     // loading 상태가 변경되면서 새로운 observer가 생성될 수 있음
     await waitFor(() => {
@@ -200,7 +199,7 @@ describe('useInfiniteScroll', () => {
       resolveCallback!();
     });
 
-    expect(result.current[1]).toBe(false);
+    expect(result.current.loading).toBe(false);
   });
   it('컴포넌트 언마운트 시 observer 정리', async () => {
     const callback = jest.fn();
@@ -209,7 +208,7 @@ describe('useInfiniteScroll', () => {
     const mockElement = document.createElement('div');
 
     act(() => {
-      result.current[0].current = mockElement;
+      result.current.targetRef.current = mockElement;
     });
 
     rerender();
