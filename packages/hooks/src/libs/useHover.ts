@@ -13,6 +13,14 @@ export function useHover<T extends HTMLElement>({ onEnter, onLeave }: hoverHandl
   const [isHovered, setIsHovered] = useState(false);
   const hoverRef = useRef<T | null>(null);
 
+  const onEnterRef = useRef(onEnter);
+  const onLeaveRef = useRef(onLeave);
+
+  useEffect(() => {
+    onEnterRef.current = onEnter;
+    onLeaveRef.current = onLeave;
+  }, [onEnter, onLeave]);
+
   // 추후 useEventListener 적용 예정
   useEffect(() => {
     const node = hoverRef.current;
@@ -20,11 +28,11 @@ export function useHover<T extends HTMLElement>({ onEnter, onLeave }: hoverHandl
 
     const handleMouseEnter = (event: MouseEvent) => {
       setIsHovered(true);
-      onEnter?.(event);
+      onEnterRef.current?.(event);
     };
     const handleMouseLeave = (event: MouseEvent) => {
       setIsHovered(false);
-      onLeave?.(event);
+      onLeaveRef.current?.(event);
     };
 
     node.addEventListener('mouseenter', handleMouseEnter);
@@ -34,9 +42,7 @@ export function useHover<T extends HTMLElement>({ onEnter, onLeave }: hoverHandl
       node.removeEventListener('mouseenter', handleMouseEnter);
       node.removeEventListener('mouseleave', handleMouseLeave);
     };
-
-    // 이벤트 중복 등록 방지를 위하여 빈 배열로 처음에만 등록
-  }, [onEnter, onLeave]);
+  }, []);
 
   return { isHovered, hoverRef };
 }
