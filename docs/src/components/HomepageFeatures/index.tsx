@@ -11,23 +11,33 @@ type FeatureItem = {
 
 const FeatureList: FeatureItem[] = [
   {
-    title: '📦 NPM Ready',
+    title: '📦 Easy Installation',
     Svg: require('@site/static/img/Package.svg').default,
     description: (
       <>
-        <p>별도 설정 없이, 한 줄 설치로 바로 프로젝트에 적용할 수 있습니다.</p>
+        <p>
+          별도 설정 없이 <b>NPM 한 줄 설치</b>로 바로 프로젝트에 적용할 수 있습니다.
+        </p>
       </>
     ),
   },
   {
-    title: '⚡ Developer Friendly',
+    title: '⚡ Type-Safe & DX Focused',
     Svg: require('@site/static/img/Zap.svg').default,
-    description: <>Hookponent는 타입 안정성까지 보장하는 개발자 친화적인 유틸 훅 라이브러리입니다.</>,
+    description: (
+      <>
+        Hookponent는 <b>타입 안전성</b>을 보장하며, 개발자 경험(DX)을 최우선으로 고려한 유틸 훅 라이브러리입니다.
+      </>
+    ),
   },
   {
-    title: '🧩 Reusable Components',
+    title: '🧩 Hooks + Components',
     Svg: require('@site/static/img/Puzzle.svg').default,
-    description: <>Hookponent는 자주 쓰는 UI 컴포넌트와 훅을 제공하여 팀 프로젝트 전반에서 재사용성을 극대화합니다.</>,
+    description: (
+      <>
+        자주 쓰이는 <b>커스텀 훅</b>과 <b>UI 컴포넌트</b>를 함께 제공하여, 프로젝트 전반에서 재사용성을 극대화합니다.
+      </>
+    ),
   },
 ];
 
