@@ -46,7 +46,7 @@ const config: Config = {
       title: 'hookponent',
       logo: {
         alt: 'hookdle 로고',
-        src: 'img/logo.svg',
+        src: 'img/hookponent-logo.svg',
       },
       items: [
         {
