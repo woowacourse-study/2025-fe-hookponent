@@ -36,6 +36,8 @@ const [isSmall, isMedium] = useMediaQuery(['(max-width: 640px)', '(max-width: 10
 - SSR 안전성
   - 서버사이드 렌더링 환경에서도 안전하게 동작하도록 초기 상태를 처리합니다.
 
+---
+
 ## ✅ 예시
 
 ### 단일 쿼리 사용

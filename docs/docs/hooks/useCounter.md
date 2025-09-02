@@ -28,6 +28,8 @@ const { count, increment, decrement, reset, setCount } = useCounter(10, { min: 0
 | `reset` | `() => void` | 숫자를 초기 값으로 변경하는 함수 |
 | `setCount` | `(value: number \| ((prev: number) => number)) => void` | 숫자를 지정한 값으로 변경하는 함수 |
 
+---
+
 ## ✅ 예시
 
 ```tsx

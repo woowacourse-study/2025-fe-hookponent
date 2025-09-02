@@ -27,6 +27,8 @@ const [value, setTrue, setFalse, toggle] = useBooleanState(defaultValue);
 | `2`    | `setFalse` | `() => void` | 상태를 `false`로 설정    |
 | `3`    | `toggle`   | `() => void` | 현재 상태를 반전(toggle) |
 
+---
+
 ## ✅ 예시
 
 ```tsx

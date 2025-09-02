@@ -29,7 +29,9 @@ const isIdle = useIdle(timeout);
 3. `mousedown`, `mousemove`, `keypress`, `keydown`, `scroll`, `touchstart`, `click` 이벤트를 감지합니다.
 4. 컴포넌트가 언마운트되면 이벤트 리스너 및 타이머를 정리합니다.
 
-### ✅ 예시
+---
+
+## ✅ 예시
 
 ```tsx
 import React, { useEffect } from 'react';
@@ -53,7 +55,7 @@ function IdleWarning() {
 }
 ```
 
-### 💡 활용 팁
+## 💡 활용 팁
 
 - 자동 로그아웃 기능 구현 시 유용합니다.
 - 사용자 상태 추적(예: 실시간 협업 앱에서 활동 중 표시)에 활용할 수 있습니다.

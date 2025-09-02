@@ -7,17 +7,13 @@
 - 필요 시 refresh() 함수를 통해 수동으로 Storage 값을 다시 불러올 수 있습니다.
 - 초기값 저장 여부, 직렬화/역직렬화 함수도 유연하게 설정할 수 있습니다.
 
----
-
 ## 🔗 사용법
 
 ```tsx
 const [value, setValue, refresh] = useStorageState(key, initialValue, options);
 ```
 
----
-
-## 📥 매개변수
+### 매개변수
 
 | 이름           | 타입      | 설명                                                                 |
 | -------------- | --------- | -------------------------------------------------------------------- |
@@ -25,9 +21,7 @@ const [value, setValue, refresh] = useStorageState(key, initialValue, options);
 | `initialValue` | `T`       | 값이 없을 때 사용할 초기값                                           |
 | `options`      | `object?` | 선택값. 저장소 타입, 직렬화 함수, 자동 초기 저장 여부 등을 설정 가능 |
 
----
-
-### 🔧 `options` 구조
+#### `options` 구조
 
 | 필드           | 타입                   | 설명                                                                       |
 | -------------- | ---------------------- | -------------------------------------------------------------------------- |
@@ -36,9 +30,7 @@ const [value, setValue, refresh] = useStorageState(key, initialValue, options);
 | `serializer`   | `(value: T) => string` | 값을 문자열로 직렬화하는 함수 (기본: `JSON.stringify`)                     |
 | `deserializer` | `(value: string) => T` | 문자열을 원래 값으로 역직렬화하는 함수 (기본: `JSON.parse`)                |
 
----
-
-## 🔁 반환값
+### 반환값
 
 `[value, setValue, refresh]`
 

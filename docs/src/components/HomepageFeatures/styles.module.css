@@ -1,11 +1,59 @@
 .features {
   display: flex;
   align-items: center;
-  padding: 2rem 0;
+  padding: 4rem 0;
   width: 100%;
+  background: linear-gradient(180deg, #f9fafb 0%, #ffffff 100%);
 }
 
-.featureSvg {
-  height: 200px;
-  width: 200px;
+html[data-theme='dark'] .features {
+  background: linear-gradient(180deg, #1a1a1a 0%, #000000 100%);
+}
+
+.featureCard {
+  opacity: 0;
+  transform: translateY(40px);
+  animation: fadeUp 0.8s ease forwards;
+  background: transparent;
+  color: inherit;
+}
+
+@keyframes fadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.featureIcon {
+  height: 120px;
+  width: 120px;
+  margin-bottom: 1rem;
+  animation: popIn 0.6s ease forwards;
+}
+
+@keyframes popIn {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  70% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.featureCard:hover {
+  transform: translateY(-8px);
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+}
+
+html[data-theme='dark'] .featureCard:hover {
+  box-shadow: 0 12px 24px rgba(255, 255, 255, 0.1);
 }
