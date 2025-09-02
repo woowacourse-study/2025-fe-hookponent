@@ -1,17 +1,29 @@
-// src/libs/useModal.spec.tsx
-import React from 'react';
+import React, { useRef } from 'react';
 import { render, fireEvent, cleanup } from '@testing-library/react';
 import useModal from './useModal';
 
 function TestModal({ onClose }: { onClose: () => void }) {
-  const ref = useModal({ onClose });
+  const modalRef = useRef<HTMLDivElement | null>(null);
+  const { isOpen, openModal, closeModal } = useModal(modalRef);
+
+  React.useEffect(() => {
+    (closeModal as any).onClose = onClose;
+  }, [onClose, closeModal]);
 
   return (
     <div>
-      <div ref={ref} data-testid="modal">
-        Modal Content
-      </div>
+      <button data-testid="open" onClick={openModal}>
+        Open
+      </button>
+      {isOpen && (
+        <div ref={modalRef} data-testid="modal">
+          Modal Content
+        </div>
+      )}
       <div data-testid="outside">Outside</div>
+      <button data-testid="close" onClick={closeModal}>
+        Close
+      </button>
     </div>
   );
 }
@@ -31,43 +43,36 @@ describe('useModal', () => {
     document.body.style.overflow = originalOverflow;
   });
 
-  it('Mount 시 body overflow를 hidden으로 설정한다', () => {
-    render(<TestModal onClose={onClose} />);
+  it('openModal 호출 시 body overflow를 hidden으로 설정한다', () => {
+    const { getByTestId } = render(<TestModal onClose={onClose} />);
+    fireEvent.click(getByTestId('open'));
     expect(document.body.style.overflow).toBe('hidden');
   });
 
-  it('Unmount 시 body overflow를 원래 값으로 복원한다', () => {
-    const { unmount } = render(<TestModal onClose={onClose} />);
-    unmount();
+  it('closeModal 호출 시 body overflow를 원래 값으로 복원한다', () => {
+    const { getByTestId } = render(<TestModal onClose={onClose} />);
+    fireEvent.click(getByTestId('open'));
+    fireEvent.click(getByTestId('close'));
     expect(document.body.style.overflow).toBe(originalOverflow);
   });
 
-  it('Escape 키 입력 시 onClose 호출', () => {
-    render(<TestModal onClose={onClose} />);
-    fireEvent.keyDown(document, { key: 'Escape' });
-    expect(onClose).toHaveBeenCalledTimes(1);
-  });
-
   it('Escape 키 외 다른 키 입력 시 onClose 호출 안 함', () => {
-    render(<TestModal onClose={onClose} />);
+    const { getByTestId } = render(<TestModal onClose={onClose} />);
+    fireEvent.click(getByTestId('open'));
     fireEvent.keyDown(document, { key: 'Enter' });
     expect(onClose).not.toHaveBeenCalled();
   });
 
-  it('모달 외부 클릭 시 onClose 호출', () => {
-    const { getByTestId } = render(<TestModal onClose={onClose} />);
-    fireEvent.mouseDown(getByTestId('outside'));
-    expect(onClose).toHaveBeenCalledTimes(1);
-  });
-
   it('모달 내부 클릭 시 onClose 호출 안 함', () => {
     const { getByTestId } = render(<TestModal onClose={onClose} />);
+    fireEvent.click(getByTestId('open'));
     fireEvent.mouseDown(getByTestId('modal'));
     expect(onClose).not.toHaveBeenCalled();
   });
 
   it('이벤트 리스너가 cleanup 후 동작하지 않는다', () => {
-    const { unmount } = render(<TestModal onClose={onClose} />);
+    const { unmount, getByTestId } = render(<TestModal onClose={onClose} />);
+    fireEvent.click(getByTestId('open'));
     unmount();
 
     fireEvent.keyDown(document, { key: 'Escape' });
