@@ -1,32 +1,46 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
-interface UseModalProps {
-  onClose: () => void;
+interface UseModal {
+  isOpen: boolean;
+  openModal: () => void;
+  closeModal: () => void;
 }
 
-function useModal({ onClose }: UseModalProps) {
-  const targetRef = useRef<HTMLDivElement | null>(null);
+function useModal(targetRef: React.RefObject<HTMLDivElement | null>): UseModal {
+  const onCloseRef = useRef<() => void>(() => {});
+  const [isOpen, setIsOpen] = useState(false);
+
+  const openModal = useCallback(() => {
+    setIsOpen(true);
+  }, []);
+
+  const closeModal = useCallback(() => {
+    setIsOpen(false);
+    onCloseRef.current?.();
+  }, []);
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        onClose();
+        closeModal();
       }
     },
-    [onClose]
+    [closeModal]
   );
 
   const handleOutsideClick = useCallback(
     (e: MouseEvent) => {
       if (targetRef.current && !targetRef.current.contains(e.target as Node)) {
-        onClose();
+        closeModal();
       }
     },
-    [onClose]
+    [targetRef, closeModal]
   );
 
   useEffect(() => {
-    const noScroll = document.body.style.overflow;
+    if (!isOpen) return;
+
+    const prevScroll = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
 
     document.addEventListener('keydown', handleKeyDown);
@@ -35,11 +49,15 @@ function useModal({ onClose }: UseModalProps) {
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
       document.removeEventListener('mousedown', handleOutsideClick);
-      document.body.style.overflow = noScroll;
+      document.body.style.overflow = prevScroll;
     };
-  }, [handleKeyDown, handleOutsideClick]);
+  }, [isOpen, handleKeyDown, handleOutsideClick]);
 
-  return targetRef;
+  return {
+    isOpen,
+    openModal,
+    closeModal,
+  };
 }
 
 export default useModal;
