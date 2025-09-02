@@ -27,6 +27,8 @@ const { darkMode, toggleDarkMode, setDarkMode } = useDarkMode(options);
 | `toggleDarkMode` | `() => void`               | 다크 모드 상태를 토글하는 함수      |
 | `setDarkMode`    | `(value: boolean) => void` | 다크 모드 상태를 직접 설정하는 함수 |
 
+---
+
 ## ✅ 예시
 
 ### 기본 사용법

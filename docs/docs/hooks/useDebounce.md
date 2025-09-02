@@ -20,6 +20,8 @@ const debouncedFn = useDebounce(callback, wait);
 
 - debouncedFn: 디바운스된 콜백 함수로, 필요할 때 호출
 
+---
+
 ## ✅ 예시
 
 ```tsx

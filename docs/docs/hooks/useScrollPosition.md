@@ -31,6 +31,8 @@ const { position, direction } = useScrollPosition(options);
 - `direction: 'up' | 'down' | 'left' | 'right' | 'none'`
   - 최근 스크롤 방향
 
+---
+
 ## ✅ 예시
 
 ### Window 스크롤 추적
