@@ -9,40 +9,44 @@
 ## 🔗 사용법
 
 ```
-useModal({onClose});
+const { isOpen, openModal, closeModal } = useModal(modalRef);
 ```
 
 ### 매개변수
 
-| 이름      | 타입         | 설명                              |
-| --------- | ------------ | --------------------------------- |
-| `onClose` | `() => void` | ESC 또는 외부 클릭 시 실행할 콜백 |
+| 이름        | 타입                                | 설명                              |
+| ----------- | ----------------------------------- | --------------------------------- |
+| `targetRef` | `RefObject<HTMLDivElement \| null>` | 모달 DOM 요소를 가리키는 ref 객체 |
+
+### 반환값
+
+| 이름         | 타입         | 설명                             |
+| ------------ | ------------ | -------------------------------- |
+| `isOpen`     | `boolean`    | 모달이 열려 있는지 여부          |
+| `openModal`  | `() => void` | 모달을 열고 이벤트 리스너를 등록 |
+| `closeModal` | `() => void` | 모달을 닫고 이벤트 리스너를 해제 |
 
 ## ✅ 예시
 
 ```tsx
-import { useState } from 'react';
+import { useRef } from 'react';
 import useModal from '../../packages/hooks/src/libs/useModal';
 import './Modal.css';
 
 function App() {
-  const [isOpen, setIsOpen] = useState(false);
-  const onClose = () => {
-    setIsOpen(false);
-  };
-
-  const modalRef = useModal({ onClose });
+  const modalRef = useRef<HTMLDivElement>(null);
+  const { isOpen, openModal, closeModal } = useModal(modalRef);
 
   return (
     <>
-      <button onClick={() => setIsOpen(true)}>모달 열기</button>
+      <button onClick={openModal}>모달 열기</button>
 
       {isOpen && (
         <div className="modal-overlay">
           <div ref={modalRef} className="modal-content">
             <h2>모달 제목</h2>
             <p>이곳은 모달 콘텐츠 영역입니다.</p>
-            <button onClick={onClose}>모달 닫기</button>
+            <button onClick={closeModal}>모달 닫기</button>
           </div>
         </div>
       )}
