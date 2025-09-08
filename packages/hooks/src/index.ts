@@ -12,3 +12,4 @@ export * from './libs/useMediaQuery';
 export * from './libs/useCounter';
 export * from './libs/useEventListener';
 export * from './libs/useLockBodyScroll';
+export * from './libs/useSingleEffect';
