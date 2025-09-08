@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 interface UseClipBoardReturns {
   isCopied: boolean;
@@ -15,31 +15,26 @@ export function useClipboard(timeout: number = 2000): UseClipBoardReturns {
   const [clipboardText, setClipboardText] = useState<string | null>(null);
   const [error, setError] = useState<Error | null>(null);
 
-  const copy = useCallback(
-    async (text: string) => {
-      if (!navigator?.clipboard) {
-        console.warn('Clipboard API not supported');
-        return;
-      }
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-      try {
-        await navigator.clipboard.writeText(text);
-        setIsCopied(true);
-        setClipboardText(text);
-        setError(null);
+  const copy = useCallback(async (text: string) => {
+    if (!navigator?.clipboard) {
+      console.warn('Clipboard API not supported');
+      return;
+    }
 
-        setTimeout(() => {
-          setIsCopied(false);
-        }, timeout);
-      } catch (error) {
-        console.error('Failed to copy text: ', error);
-        setIsCopied(false);
-        setClipboardText(null);
-        setError(error as Error);
-      }
-    },
-    [timeout]
-  );
+    try {
+      await navigator.clipboard.writeText(text);
+      setIsCopied(true);
+      setClipboardText(text);
+      setError(null);
+    } catch (error) {
+      console.error('Failed to copy text: ', error);
+      setIsCopied(false);
+      setClipboardText(null);
+      setError(error as Error);
+    }
+  }, []);
 
   const paste = useCallback(async () => {
     if (!navigator?.clipboard) return null;
@@ -64,6 +59,18 @@ export function useClipboard(timeout: number = 2000): UseClipBoardReturns {
     setClipboardText(null);
     setError(null);
   }, []);
+
+  useEffect(() => {
+    if (isCopied) {
+      timerRef.current = setTimeout(() => {
+        setIsCopied(false);
+      }, timeout);
+    }
+
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, [isCopied, timeout]);
 
   return { isCopied, clipboardText, error, copy, paste, reset };
 }
