@@ -5,7 +5,7 @@ type IsMountedRefReturn = {
 };
 
 export function useIsMountedRef(): IsMountedRefReturn {
-  const ref = useRef({ isMount: true }).current;
+  const ref = useRef({ isMount: false }).current;
 
   useEffect(() => {
     ref.isMount = true;
