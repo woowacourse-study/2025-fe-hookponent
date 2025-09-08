@@ -113,3 +113,7 @@ function RotatingImage() {
   return <Motion.img ref={imgRef} src="/logo.png" animate={{ rotate: 360 }} transition={{ duration: 2 }} />;
 }
 ```
+
+### 스크린샷
+
+![gif](https://private-user-images.githubusercontent.com/74090200/486781891-3a70f237-9005-46bb-aab9-cfaae8283205.gif?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NTczMzc4MzAsIm5iZiI6MTc1NzMzNzUzMCwicGF0aCI6Ii83NDA5MDIwMC80ODY3ODE4OTEtM2E3MGYyMzctOTAwNS00NmJiLWFhYjktY2ZhYWU4MjgzMjA1LmdpZj9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNTA5MDglMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjUwOTA4VDEzMTg1MFomWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPWE0ODQ2OGI3NmRjYTQ5MTkxMzkwZGI3NzViNWNkNGI3NGI4Yjg1NTBkMTNmMWNkNzUxMWQ1YzYwMTMyNjFhNTImWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0In0.yNWGoAt_90sermT3ysGvLAjLOYB9lmBW8ZrDMwVYBUk)
