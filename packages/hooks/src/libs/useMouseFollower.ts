@@ -42,8 +42,14 @@ const cursorStore = (() => {
   };
 })();
 
+type useMouseFollowerStyle = {
+  /** 포인터 상대 오프셋(px) */
+  offset?: { x?: number; y?: number }; // default: {}
+};
+
 type useMouseFollowerOptions<T extends HTMLElement = HTMLElement> = {
   targetRef?: React.RefObject<T | null>;
+  style?: useMouseFollowerStyle;
 };
 
 /**
@@ -59,6 +65,7 @@ type useMouseFollowerOptions<T extends HTMLElement = HTMLElement> = {
  *
  * @param options
  * @param options.targetRef 팔로워가 표시될 "존" 요소의 ref (없으면 글로벌 커서로 동작)
+ * @param options.style.offset 포인터로부터의 상대 오프셋(px) `{ x?: number; y?: number }`
  *
  * @returns React.RefObject<E | null>
  * - 커서로 사용할 요소에 붙일 ref
@@ -69,11 +76,30 @@ type useMouseFollowerOptions<T extends HTMLElement = HTMLElement> = {
  */
 export function useMouseFollower<E extends HTMLElement = HTMLElement, T extends HTMLElement = HTMLElement>({
   targetRef = { current: null },
+  style,
 }: useMouseFollowerOptions<T> = {}): React.RefObject<E | null> {
   const cursorRef = useRef<E>(null);
   const posRef = useRef({ x: -9999, y: -9999 });
   const prevInsideRef = useRef(false);
   const targetElRef = useRef<HTMLElement | null>(null);
+
+  const offsetX = style?.offset?.x ?? 0;
+  const offsetY = style?.offset?.y ?? 0;
+
+  // 0) 베이스 스타일 1회 적용: 좌상단 기준 고정 + 기본 값
+  useEffect(() => {
+    const el = cursorRef.current;
+    if (!el) return;
+
+    // 필수 베이스 (좌표계 고정)
+    el.style.position = 'fixed';
+    el.style.top = '0';
+    el.style.left = '0';
+    el.style.pointerEvents = 'none';
+    el.style.willChange = 'transform, opacity';
+    // 초기 화면 밖
+    el.style.transform = 'translate3d(-9999px, -9999px, 0)';
+  }, []);
 
   // 1) targetRef 동기화
   useEffect(() => {
@@ -93,24 +119,27 @@ export function useMouseFollower<E extends HTMLElement = HTMLElement, T extends 
   }, []);
 
   // 3) 좌표/가시성 갱신
-  const updateCursor = useCallback((x: number, y: number) => {
-    const el = cursorRef.current;
-    if (!el) return;
+  const updateCursor = useCallback(
+    (x: number, y: number) => {
+      const el = cursorRef.current;
+      if (!el) return;
 
-    // 글로벌 커서
-    posRef.current = { x, y };
-    el.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+      // 글로벌 커서
+      posRef.current = { x, y };
+      el.style.transform = `translate3d(${x + offsetX}px, ${y + offsetY}px, 0)`;
 
-    // 존 커서
-    const targetEl = targetElRef.current;
-    if (targetEl) {
-      const rect = targetEl.getBoundingClientRect();
-      const inside = x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom;
-      cursorStore.set(inside, prevInsideRef.current);
-      prevInsideRef.current = inside;
-      el.style.opacity = inside ? '1' : '0';
-    }
-  }, []);
+      // 존 커서
+      const targetEl = targetElRef.current;
+      if (targetEl) {
+        const rect = targetEl.getBoundingClientRect();
+        const inside = x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom;
+        cursorStore.set(inside, prevInsideRef.current);
+        prevInsideRef.current = inside;
+        el.style.opacity = inside ? '1' : '0';
+      }
+    },
+    [offsetX, offsetY]
+  );
 
   // 4) 포인터 추적 (이벤트 등록)
   useEffect(() => {
