@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useRef, type EffectCallback } from 'react';
 
 /**
@@ -17,6 +18,11 @@ import { useEffect, useRef, type EffectCallback } from 'react';
  */
 export function useUpdateEffect(callback: EffectCallback, dependencies: readonly [unknown, ...unknown[]]) {
   const isFirstRender = useRef(true);
+  const callbackRef = useRef(callback);
+
+  useEffect(() => {
+    callbackRef.current = callback;
+  }, [callback]);
 
   useEffect(() => {
     if (isFirstRender.current) {
@@ -24,9 +30,8 @@ export function useUpdateEffect(callback: EffectCallback, dependencies: readonly
       return;
     }
 
-    return callback();
+    return callbackRef.current();
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   }, dependencies);
 }
