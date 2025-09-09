@@ -24,8 +24,9 @@ const cursorStore = (() => {
      */
     set(active: boolean, prev: boolean) {
       if (active === prev) return;
-      // 단순히 "존 하나만 존재" 가정에 맞춘 토글
-      activeCount = active ? 1 : 0;
+      // 존 여러개일 때 중첩 계산
+      activeCount += active ? 1 : -1;
+      if (activeCount < 0) activeCount = 0;
       notify();
     },
 
