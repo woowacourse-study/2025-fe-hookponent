@@ -8,6 +8,41 @@ interface UseFunnelOptions {
   history?: boolean;
 }
 
+/**
+ * 메타 정보
+ */
+export interface FunnelMeta {
+  /**
+   * 현재 단계의 인덱스
+   */
+  currentIndex: number;
+
+  /**
+   * 전체 step의 개수
+   */
+  length: number;
+
+  /**
+   * 현재 step이 첫 번째인지 여부
+   */
+  isFirst: boolean;
+
+  /**
+   * 현재 step이 마지막인지 여부
+   */
+  isLast: boolean;
+
+  /**
+   * 이전 단계로 이동할 수 있는지 여부
+   */
+  canPrev: boolean;
+
+  /**
+   * 다음 단계로 이동할 수 있는지 여부
+   */
+  canNext: boolean;
+}
+
 interface UseFunnelReturn<S extends readonly string[]> {
   Funnel: React.ComponentType<{ step: S[number]; children: React.ReactNode }> & {
     Step: React.FC<{ name: S[number]; children: React.ReactNode }>;
@@ -16,6 +51,7 @@ interface UseFunnelReturn<S extends readonly string[]> {
   next: () => void;
   prev: () => void;
   setStep: (step: S[number]) => void; // 필요 시 노출
+  meta: FunnelMeta;
 }
 
 /**
@@ -37,6 +73,11 @@ interface UseFunnelReturn<S extends readonly string[]> {
  * - `next`: 다음 스텝으로 이동하는 함수 (마지막 스텝에서는 유지)
  * - `prev`: 이전 스텝으로 이동하는 함수 (첫 스텝에서는 유지, history 옵션이 true면 `window.history.back()` 동작)
  * - `setStep`: 특정 스텝으로 직접 이동하는 함수
+ * - `meta`: 현재 스텝을 기준으로 계산된 파생 메타데이터
+ *   - `currentIndex`: 현재 스텝의 0-based 인덱스
+ *   - `length`: 전체 스텝 개수
+ *   - `isFirst`/`isLast`: 첫/마지막 스텝 여부
+ *   - `canPrev`/`canNext`: 이전/다음 스텝으로 이동 가능 여부
  */
 const useFunnel = <S extends readonly string[]>(
   steps: S,
@@ -46,7 +87,7 @@ const useFunnel = <S extends readonly string[]>(
   const historyEnabled = options.history;
   const stepsMutable = useMemo(() => [...steps], [steps]);
 
-  const { Funnel, step, setStep, stepPrev, stepNext } = useInitialFunnel<T>(stepsMutable);
+  const { Funnel, step, setStep, stepPrev, stepNext, meta } = useInitialFunnel<T>(stepsMutable);
   const navigateToStep = useFunnelHistory(historyEnabled, step, setStep);
 
   const next = useCallback(() => {
@@ -55,11 +96,10 @@ const useFunnel = <S extends readonly string[]>(
 
     // 2) history 연동 옵션이면 push
     if (historyEnabled) {
-      const current = steps.indexOf(step);
-      const nextStep = steps[current + 1];
+      const nextStep = steps[meta.currentIndex + 1];
       navigateToStep(nextStep);
     }
-  }, [stepNext, historyEnabled, steps, step, navigateToStep]);
+  }, [stepNext, historyEnabled, steps, navigateToStep, meta.currentIndex]);
 
   const prev = useCallback(() => {
     if (historyEnabled) {
@@ -72,13 +112,14 @@ const useFunnel = <S extends readonly string[]>(
     }
   }, [historyEnabled, stepPrev]);
 
-  return { Funnel, step, next, prev, setStep };
+  return { Funnel, step, next, prev, setStep, meta };
 };
 
 export default useFunnel;
 
 const useInitialFunnel = <T extends string>(initialSteps: T[]) => {
   const [step, setStep] = useState<T>(initialSteps[0]);
+  const length = initialSteps.length;
 
   const indexMap = useMemo(() => {
     const m = new Map<T, number>();
@@ -96,13 +137,24 @@ const useInitialFunnel = <T extends string>(initialSteps: T[]) => {
   const stepNext = useCallback(() => {
     setStep((prev) => {
       const idx = indexMap.get(prev)!;
-      return idx >= 0 && idx < initialSteps.length - 1 ? initialSteps[idx + 1] : prev;
+      return idx >= 0 && idx < length - 1 ? initialSteps[idx + 1] : prev;
     });
-  }, [indexMap, initialSteps]);
+  }, [indexMap, initialSteps, length]);
 
   const Funnel = useMemo(() => createFunnelComponents<T>(), []);
 
-  return { Funnel, step, setStep, stepNext, stepPrev };
+  // 부가정보를 위한 로직
+  const index = indexMap.get(step) ?? 0;
+  const meta: FunnelMeta = {
+    currentIndex: index,
+    length,
+    isFirst: index === 0,
+    isLast: index === length - 1,
+    canPrev: index > 0,
+    canNext: index < length - 1,
+  };
+
+  return { Funnel, step, setStep, stepNext, stepPrev, meta };
 };
 
 /* ---------------- UI components ---------------- */
