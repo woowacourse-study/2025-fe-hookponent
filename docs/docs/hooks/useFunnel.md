@@ -5,13 +5,14 @@
 - `<Funnel>` / `<Funnel.Step>` 컴포넌트 wrapper로 **스텝별 조건 렌더링**을 간결하게 구현
 - `next()` / `prev()`로 단계 이동
 - `history: true` 시 `pushState`/`popstate` 기반으로 **브라우저 뒤/앞 이동과 상태 동기화**
+- meta를 통해 **현재 스텝 관련 부가정보(파생 상태)**를 함께 제공
 
 ---
 
 ## 🔗 사용법
 
 ```tsx
-const { Funnel, step, next, prev, setStep } = useFunnel(steps, options?);
+const { Funnel, step, next, prev, setStep, meta } = useFunnel(steps, options?);
 ```
 
 ---
@@ -40,6 +41,18 @@ const { Funnel, step, next, prev, setStep } = useFunnel(steps, options?);
 | `next`    | `() => void`                    | 다음 스텝으로 이동. 마지막 스텝에서는 유지(히스토리도 push 없음)                         |
 | `prev`    | `() => void`                    | 이전 스텝으로 이동. 첫 스텝에서는 유지. `history: true`면 `window.history.back()` 실행   |
 | `setStep` | `(step: S[number]) => void`     | 특정 스텝으로 직접 이동                                                                  |
+| `meta`    | `FunnelMeta`                    | 현재 스텝을 기준으로 계산된 파생 메타데이터                                              |
+
+### 📊 `meta` 구조 (`FunnelMeta`)
+
+| 필드           | 타입      | 설명                                |
+| -------------- | --------- | ----------------------------------- |
+| `currentIndex` | `number`  | 현재 스텝의 0-based 인덱스          |
+| `length`       | `number`  | 전체 스텝 개수                      |
+| `isFirst`      | `boolean` | 현재 스텝이 첫 번째인지 여부        |
+| `isLast`       | `boolean` | 현재 스텝이 마지막인지 여부         |
+| `canPrev`      | `boolean` | 이전 스텝으로 이동할 수 있는지 여부 |
+| `canNext`      | `boolean` | 다음 스텝으로 이동할 수 있는지 여부 |
 
 ---
 
@@ -55,11 +68,13 @@ import { useFunnel } from 'hookdle';
 const steps = ['Intro', 'Calendar', 'Basic', 'Confirm'] as const;
 
 export default function CreateEvent() {
-  const { Funnel, step, next, prev } = useFunnel(steps);
+  const { Funnel, step, next, prev, meta } = useFunnel(steps);
 
   return (
     <div>
-      <h3>Step: {step}</h3>
+      <h3>
+        Step: {step} ({meta.currentIndex + 1} / {meta.length})
+      </h3>
 
       <Funnel step={step}>
         <Funnel.Step name="Intro">인트로</Funnel.Step>
@@ -68,8 +83,12 @@ export default function CreateEvent() {
         <Funnel.Step name="Confirm">확인</Funnel.Step>
       </Funnel>
 
-      <button onClick={prev}>이전(뒤로가기)</button>
-      <button onClick={next}>다음(push)</button>
+      <button onClick={prev} disabled={!meta.canPrev}>
+        이전
+      </button>
+      <button onClick={next} disabled={!meta.canNext}>
+        다음
+      </button>
     </div>
   );
 }
@@ -83,7 +102,7 @@ export default function CreateEvent() {
 const steps = ['Intro', 'Calendar', 'Basic', 'Confirm'] as const;
 
 function CreateEventWithoutHistory() {
-  const { Funnel, step, next, prev } = useFunnel(steps, { history: false });
+  const { Funnel, step, next, prev, meta } = useFunnel(steps, { history: false });
 
   return (
     <>
@@ -94,8 +113,12 @@ function CreateEventWithoutHistory() {
         <Funnel.Step name="Confirm">확인</Funnel.Step>
       </Funnel>
 
-      <button onClick={prev}>이전</button>
-      <button onClick={next}>다음</button>
+      <button onClick={prev} disabled={!meta.canPrev}>
+        이전
+      </button>
+      <button onClick={next} disabled={!meta.canNext}>
+        다음
+      </button>
     </>
   );
 }
@@ -107,10 +130,14 @@ function CreateEventWithoutHistory() {
 const steps = ['Intro', 'Form', 'Confirm'] as const;
 
 function JumpExample() {
-  const { Funnel, step, setStep } = useFunnel(steps);
+  const { Funnel, step, setStep, meta } = useFunnel(steps);
 
   return (
     <>
+      <p>
+        현재 스텝: {step} ({meta.currentIndex + 1}/{meta.length})
+      </p>
+
       <Funnel step={step}>
         <Funnel.Step name="Intro">Intro</Funnel.Step>
         <Funnel.Step name="Form">Form</Funnel.Step>
@@ -128,6 +155,7 @@ function JumpExample() {
 ## 🧩 팁
 
 - **리터럴 배열**: `const steps = ['A','B','C'] as const` → `step`/`setStep`/`Funnel.Step name`에 자동완성/타입 안전
+- **메타 활용**: `meta`를 활용해 버튼 `disabled` 처리, 진행률 표시(`currentIndex / length`) 등을 쉽게 구현 가능
 
 ---
 
