@@ -43,15 +43,15 @@ const cursorStore = (() => {
   };
 })();
 
-type useMouseFollowerStyle = {
+interface UseMouseFollowerStyle {
   /** 포인터 상대 오프셋(px) */
   offset?: { x?: number; y?: number }; // default: {}
-};
+}
 
-type useMouseFollowerOptions<T extends HTMLElement = HTMLElement> = {
+interface UseMouseFollowerOptions<T extends HTMLElement = HTMLElement> {
   targetRef?: React.RefObject<T | null>;
-  style?: useMouseFollowerStyle;
-};
+  style?: UseMouseFollowerStyle;
+}
 
 /**
  * `useMouseFollower` 훅은 DOM 요소를 마우스 포인터처럼 따라다니게 만들어주는 훅입니다.
@@ -78,7 +78,7 @@ type useMouseFollowerOptions<T extends HTMLElement = HTMLElement> = {
 export function useMouseFollower<E extends HTMLElement = HTMLElement, T extends HTMLElement = HTMLElement>({
   targetRef = { current: null },
   style,
-}: useMouseFollowerOptions<T> = {}): React.RefObject<E | null> {
+}: UseMouseFollowerOptions<T> = {}): React.RefObject<E | null> {
   const cursorRef = useRef<E>(null);
   const posRef = useRef({ x: -9999, y: -9999 });
   const prevInsideRef = useRef(false);
@@ -97,7 +97,7 @@ export function useMouseFollower<E extends HTMLElement = HTMLElement, T extends 
     el.style.top = '0';
     el.style.left = '0';
     el.style.pointerEvents = 'none';
-    el.style.willChange = 'transform, opacity';
+    // el.style.willChange = 'transform, opacity';
     // 초기 화면 밖
     el.style.transform = 'translate3d(-9999px, -9999px, 0)';
   }, []);
