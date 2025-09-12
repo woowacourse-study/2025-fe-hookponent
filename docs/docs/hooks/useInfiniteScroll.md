@@ -154,5 +154,5 @@ function InfiniteScrollWithError() {
 - `rootMargin`: root의 마진 값 (예: '100px')
 - `threshold`: 콜백이 실행될 요소의 가시성 비율 (0.0 ~ 1.0)
 
-<img src='../../static/img/InfiniteScroll-1.png'>
-<img src='../../static/img/InfiniteScroll-2.png'>
+<img src="../../img/InfiniteScroll-1.png" alt="흐름도" width="720" />
+<img src="../../img/InfiniteScroll-2.png" alt="흐름도" width="720" />
