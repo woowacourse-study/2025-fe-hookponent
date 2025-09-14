@@ -21,7 +21,11 @@ import { EffectCallback, useEffect } from 'react';
  * });
  * ```
  */
-const useInitEffect = (callback: EffectCallback) => {
+
+interface useInitEffectParams {
+  callback: EffectCallback;
+}
+const useInitEffect = ({ callback }: useInitEffectParams) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(callback, []);
 };
