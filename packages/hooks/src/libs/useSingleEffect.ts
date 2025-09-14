@@ -1,11 +1,12 @@
-import { useEffect } from 'react';
+import { EffectCallback, useEffect } from 'react';
 
-interface Effect {
-  callback: () => void | (() => void);
+interface UseInitEffectParams {
+  callback: EffectCallback; 
 }
 
-const useSingleEffect = ({ callback }: Effect) => {
+const useInitEffect = ({ callback }: UseInitEffectParams) => {
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => callback(), []);
 };
 
-export default useSingleEffect;
+export default useInitEffect;
