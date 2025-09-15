@@ -12,3 +12,7 @@ export * from './libs/useMediaQuery';
 export * from './libs/useCounter';
 export * from './libs/useEventListener';
 export * from './libs/useLockBodyScroll';
+export * from './libs/useIsMountedRef';
+export * from './libs/useInfiniteScroll';
+export * from './libs/useHover';
+export * from './libs/useFunnel';
