@@ -1,4 +1,37 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useReducer, useRef } from 'react';
+
+interface State {
+  isCopied: boolean;
+  clipboardText: string | null;
+  error: Error | null;
+}
+
+type Action =
+  | { type: 'COPY_SUCCESS'; payload: string }
+  | { type: 'COPY_ERROR'; payload: Error }
+  | { type: 'PASTE_SUCCESS'; payload: string }
+  | { type: 'PASTE_ERROR'; payload: Error }
+  | { type: 'RESET' }
+  | { type: 'CLEAR_COPY_FLAG' };
+
+const reducer = (state: State, action: Action) => {
+  switch (action.type) {
+    case 'COPY_SUCCESS':
+      return { isCopied: true, clipboardText: action.payload, error: null };
+    case 'COPY_ERROR':
+      return { ...state, error: action.payload };
+    case 'PASTE_SUCCESS':
+      return { ...state, clipboardText: action.payload, error: null };
+    case 'PASTE_ERROR':
+      return { ...state, error: action.payload };
+    case 'RESET':
+      return { isCopied: false, clipboardText: null, error: null };
+    case 'CLEAR_COPY_FLAG':
+      return { ...state, isCopied: false };
+    default:
+      return state;
+  }
+};
 
 interface UseClipBoardReturns {
   isCopied: boolean;
@@ -39,9 +72,7 @@ interface UseClipBoardReturns {
  * <button onClick={reset}>Reset</button>
  */
 export function useClipboard(timeout: number = 2000): UseClipBoardReturns {
-  const [isCopied, setIsCopied] = useState(false);
-  const [clipboardText, setClipboardText] = useState<string | null>(null);
-  const [error, setError] = useState<Error | null>(null);
+  const [state, dispatch] = useReducer(reducer, { isCopied: false, clipboardText: null, error: null });
 
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -53,14 +84,10 @@ export function useClipboard(timeout: number = 2000): UseClipBoardReturns {
 
     try {
       await navigator.clipboard.writeText(text);
-      setIsCopied(true);
-      setClipboardText(text);
-      setError(null);
+      dispatch({ type: 'COPY_SUCCESS', payload: text });
     } catch (error) {
       console.error('Failed to copy text: ', error);
-      setIsCopied(false);
-      setClipboardText(null);
-      setError(error as Error);
+      dispatch({ type: 'COPY_ERROR', payload: error });
     }
   }, []);
 
@@ -69,36 +96,31 @@ export function useClipboard(timeout: number = 2000): UseClipBoardReturns {
 
     try {
       const text = await navigator.clipboard.readText();
-      setClipboardText(text);
-      setError(null);
-
+      dispatch({ type: 'PASTE_SUCCESS', payload: text });
       return text;
     } catch (error) {
       console.error('Failed to read clipboard: ', error);
-      setClipboardText(null);
-      setError(error as Error);
+      dispatch({ type: 'PASTE_ERROR', payload: error });
 
       return null;
     }
   }, []);
 
   const reset = useCallback(() => {
-    setIsCopied(false);
-    setClipboardText(null);
-    setError(null);
+    dispatch({ type: 'RESET' });
   }, []);
 
   useEffect(() => {
-    if (isCopied) {
+    if (state.isCopied) {
       timerRef.current = setTimeout(() => {
-        setIsCopied(false);
+        dispatch({ type: 'CLEAR_COPY_FLAG' });
       }, timeout);
     }
 
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current);
     };
-  }, [isCopied, timeout]);
+  }, [state.isCopied, timeout]);
 
-  return { isCopied, clipboardText, error, copy, paste, reset };
+  return { ...state, copy, paste, reset };
 }
