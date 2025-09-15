@@ -33,7 +33,7 @@ const reducer = (state: State, action: Action) => {
   }
 };
 
-interface UseClipBoardReturns {
+interface UseTextClipBoardReturns {
   isCopied: boolean;
   clipboardText: string | null;
   error: Error | null;
@@ -53,10 +53,10 @@ interface UseClipBoardReturns {
  * reset은 상태(isCopied, clipboardText, error)를 초기화합니다.
  *
  * @param {number} [timeout=2000] - 복사 성공 상태(isCopied)가 유지되는 시간(ms). 기본값은 2000ms입니다.
- * @returns {UseClipBoardReturns} - {isCopied, clipboardText, error, copy, paste, reset}
+ * @returns {UseTextClipBoardReturns} - {isCopied, clipboardText, error, copy, paste, reset}
  *
  * @example
- * const { isCopied, clipboardText, copy, paste, reset } = useClipboard(3000);
+ * const { isCopied, clipboardText, copy, paste, reset } = useTextClipboard(3000);
  *
  * <button onClick={() => copy('Hello World')}>
  *   {isCopied ? '✅ Copied!' : '📋 Copy'}
@@ -71,7 +71,7 @@ interface UseClipBoardReturns {
  *
  * <button onClick={reset}>Reset</button>
  */
-export function useClipboard(timeout: number = 2000): UseClipBoardReturns {
+export function useTextClipboard(timeout: number = 2000): UseTextClipBoardReturns {
   const [state, dispatch] = useReducer(reducer, { isCopied: false, clipboardText: null, error: null });
 
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);

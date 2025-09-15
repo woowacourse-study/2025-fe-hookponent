@@ -1,8 +1,8 @@
 import { renderHook, act } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { useClipboard } from './useClipboard';
+import { useTextClipboard } from './useTextClipboard';
 
-describe('useClipboard', () => {
+describe('useTextClipboard', () => {
   const originalClipboard = Object.getOwnPropertyDescriptor(window.navigator, 'clipboard');
 
   let writeTextMock: jest.Mock;
@@ -43,7 +43,7 @@ describe('useClipboard', () => {
   test('copy: 성공 시 isCopied=true, clipboardText 설정되고 timeout 후 false로 복귀', async () => {
     writeTextMock.mockResolvedValue(void 0);
 
-    const { result } = renderHook(() => useClipboard(100)); // 100ms로 단축
+    const { result } = renderHook(() => useTextClipboard(100)); // 100ms로 단축
     expect(result.current.isCopied).toBe(false);
     expect(result.current.clipboardText).toBeNull();
     expect(result.current.error).toBeNull();
@@ -71,7 +71,7 @@ describe('useClipboard', () => {
     const err = new Error('copy fail');
     writeTextMock.mockRejectedValue(err);
 
-    const { result } = renderHook(() => useClipboard(100));
+    const { result } = renderHook(() => useTextClipboard(100));
 
     await act(async () => {
       await result.current.copy('Oops');
@@ -86,7 +86,7 @@ describe('useClipboard', () => {
   test('paste: 성공 시 clipboardText에 반영되고 텍스트 반환', async () => {
     readTextMock.mockResolvedValue('Pasted!');
 
-    const { result } = renderHook(() => useClipboard(100));
+    const { result } = renderHook(() => useTextClipboard(100));
 
     let pasted: string | null = null;
     await act(async () => {
@@ -103,7 +103,7 @@ describe('useClipboard', () => {
     const err = new Error('paste fail');
     readTextMock.mockRejectedValue(err);
 
-    const { result } = renderHook(() => useClipboard(100));
+    const { result } = renderHook(() => useTextClipboard(100));
 
     let pasted: string | null = 'init';
     await act(async () => {
@@ -118,7 +118,7 @@ describe('useClipboard', () => {
 
   test('reset: 상태를 초기화', async () => {
     writeTextMock.mockResolvedValue(void 0);
-    const { result } = renderHook(() => useClipboard(100));
+    const { result } = renderHook(() => useTextClipboard(100));
 
     await act(async () => {
       await result.current.copy('Hello');
@@ -143,7 +143,7 @@ describe('useClipboard', () => {
       value: undefined,
     });
 
-    const { result } = renderHook(() => useClipboard(100));
+    const { result } = renderHook(() => useTextClipboard(100));
 
     await act(async () => {
       await result.current.copy('Hello');
@@ -166,7 +166,7 @@ describe('useClipboard', () => {
 
   test('언마운트 시 타이머 정리(메모리 누수/경고 없이 정리됨)', async () => {
     writeTextMock.mockResolvedValue(void 0);
-    const { result, unmount } = renderHook(() => useClipboard(100));
+    const { result, unmount } = renderHook(() => useTextClipboard(100));
 
     await act(async () => {
       await result.current.copy('Hello');

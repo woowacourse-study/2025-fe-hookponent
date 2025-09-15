@@ -1,4 +1,4 @@
-# useClipboard
+# useTextClipboard
 
 클립보드에 텍스트를 복사, 붙여넣기, 초기화할 수 있는 커스텀 `React Hook`입니다.
 복사 성공 여부(`isCopied`), 현재 클립보드 값(`clipboardText`), 에러(`error`)를 상태로 관리합니다.
@@ -6,7 +6,7 @@
 ## 🔗 사용법
 
 ```tsx
-const { isCopied, clipboardText, error, copy, paste, reset } = useClipboard(timeout);
+const { isCopied, clipboardText, error, copy, paste, reset } = useTextClipboard(timeout);
 ```
 
 ### 매개변수
@@ -31,10 +31,10 @@ const { isCopied, clipboardText, error, copy, paste, reset } = useClipboard(time
 ## ✅ 예시
 
 ```tsx
-import { useClipboard } from 'hookdle';
+import { useTextClipboard } from 'hookdle';
 
 function ClipboardExample() {
-  const { isCopied, clipboardText, error, copy, paste, reset } = useClipboard(3000);
+  const { isCopied, clipboardText, error, copy, paste, reset } = useTextClipboard(3000);
 
   return (
     <div>
