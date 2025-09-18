@@ -31,6 +31,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/npm-setup-node
 
       - name: Run hooks tests
@@ -43,6 +44,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/npm-setup-node
 
       - name: Run components tests
