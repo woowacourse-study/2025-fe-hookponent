@@ -1,0 +1,121 @@
+name: PR Test
+
+on:
+  pull_request:
+    branches:
+      - dev
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/npm-setup-node
+
+      # ---------------------------
+      # Lint
+      # ---------------------------
+      - name: Run lint
+        id: lint
+        run: |
+          echo "" >> test_results.md
+          echo "## 📝 Lint Check" >> test_results.md
+          if npm run lint > lint.log 2>&1; then
+            echo "✅ Lint check passed" >> test_results.md
+            echo "lint_status=✅ 성공" >> $GITHUB_OUTPUT
+            echo "lint_result=success" >> $GITHUB_OUTPUT
+          else
+            echo "❌ Lint check failed" >> test_results.md
+            echo "### ❌ 에러 로그 (마지막 20줄)" >> test_results.md
+            tail -n 20 lint.log >> test_results.md
+            echo "lint_status=❌ 실패" >> $GITHUB_OUTPUT
+            echo "lint_result=failure" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+
+      # ---------------------------
+      # Tests
+      # ---------------------------
+      - name: Run test
+        id: test
+        if: steps.lint.outputs.lint_result == 'success'
+        run: |
+          echo "" >> test_results.md
+          echo "## 🧪 Tests" >> test_results.md
+          if npm run test:hookdle && npm run test:componentdle > test.log 2>&1; then
+            echo "✅ Tests passed" >> test_results.md
+            echo "test_status=✅ 성공" >> $GITHUB_OUTPUT
+            echo "test_result=success" >> $GITHUB_OUTPUT
+          else
+            echo "❌ Tests failed" >> test_results.md
+            echo "### ❌ 에러 로그 (마지막 20줄)" >> test_results.md
+            tail -n 20 test.log >> test_results.md
+            echo "test_status=❌ 실패" >> $GITHUB_OUTPUT
+            echo "test_result=failure" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+
+      # ---------------------------
+      # 현재 시간 가져오기
+      # ---------------------------
+      - name: Get current time
+        uses: josStorer/get-current-time@v2
+        id: current-time
+        if: always()
+        with:
+          format: 'YYYY년 MM월 DD일 HH시 mm분 ss초'
+          utcOffset: '+09:00'
+
+      # ---------------------------
+      # 스킵된 단계 상태 표시
+      # ---------------------------
+      - name: Set skipped statuses
+        if: always()
+        run: |
+          if [[ "${{ steps.lint.outputs.lint_result }}" != "success" ]]; then
+            echo "test_status=⏭️ 건너뜀" >> $GITHUB_OUTPUT
+          fi
+        id: skipped
+
+      # ---------------------------
+      # 테스트 결과 파일 읽기
+      # ---------------------------
+      - name: Read test results
+        if: always()
+        id: read-results
+        run: |
+          if [ -f test_results.md ]; then
+            {
+              echo 'test_results_content<<EOF'
+              cat test_results.md
+              echo EOF
+            } >> $GITHUB_OUTPUT
+          else
+            echo 'test_results_content=테스트 결과를 찾을 수 없습니다.' >> $GITHUB_OUTPUT
+          fi
+
+      # ---------------------------
+      # PR 코멘트 작성
+      # ---------------------------
+      - name: Comment PR with test results
+        uses: thollander/actions-comment-pull-request@v2
+        if: always()
+        with:
+          comment_tag: ${{ github.event.number }}-test-results
+          message: |
+            ## 🚀 테스트 결과
+
+            **실행 시간**: ${{ steps.current-time.outputs.formattedTime }}
+            **커밋**: ${{ github.event.pull_request.head.sha }}
+
+            ### 📊 요약
+            - **Lint**: ${{ steps.lint.outputs.lint_status || '⏭️ 건너뜀' }}
+            - **Tests**: ${{ steps.test.outputs.test_status || steps.skipped.outputs.test_status || '⏭️ 건너뜀' }}
+
+            ---
+
+            ${{ steps.read-results.outputs.test_results_content }}

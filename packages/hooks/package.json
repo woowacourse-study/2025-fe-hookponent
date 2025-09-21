@@ -28,7 +28,8 @@
     "build": "npm run build:cjs && npm run build:esm",
     "typecheck": "tsc --noEmit",
     "clean": "rm -rf dist esm",
-    "test": "jest"
+    "test": "jest",
+    "type-check": "tsc --noEmit"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.6.3",
