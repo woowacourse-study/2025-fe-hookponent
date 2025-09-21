@@ -82,7 +82,7 @@ describe('useInfiniteScroll', () => {
 
     const observerInstance = MockIntersectionObserver.lastInstance!;
 
-    act(() => {
+    await act(async () => {
       observerInstance.trigger([{ isIntersecting: true }]);
     });
 
@@ -107,7 +107,7 @@ describe('useInfiniteScroll', () => {
 
     const observerInstance = MockIntersectionObserver.lastInstance!;
 
-    act(() => {
+    await act(async () => {
       observerInstance.trigger([{ isIntersecting: false }]);
     });
 
@@ -120,7 +120,7 @@ describe('useInfiniteScroll', () => {
 
     const mockElement = document.createElement('div');
 
-    act(() => {
+    await act(async () => {
       result.current.targetRef.current = mockElement;
     });
 
@@ -132,7 +132,7 @@ describe('useInfiniteScroll', () => {
 
     const observerInstance = MockIntersectionObserver.lastInstance!;
 
-    act(() => {
+    await act(async () => {
       observerInstance.trigger([{ isIntersecting: true }]);
     });
 
@@ -173,7 +173,7 @@ describe('useInfiniteScroll', () => {
     const observerInstance = MockIntersectionObserver.lastInstance!;
 
     // 첫 번째 intersection 트리거
-    act(() => {
+    await act(async () => {
       observerInstance.trigger([{ isIntersecting: true }]);
     });
 
