@@ -30,9 +30,6 @@ beforeAll(() => {
 describe('useScrollPosition', () => {
   it('초기 위치가 반영되어야 한다', () => {
     const { result } = renderHook(() => useScrollPosition());
-
-    console.log('result', result);
-
     expect(result.current.position).toEqual({ x: 0, y: 0 });
     expect(result.current.direction).toBe('none');
   });
