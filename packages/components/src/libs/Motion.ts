@@ -37,6 +37,7 @@ const createMotionComponent = <T extends HTMLElement>(Component: keyof JSX.Intri
       let delayStartTime: number | null = null; // 반복 사이의 딜레이가 시작된 시점의 타임스탬프
       let isInDelay = false; // 현재 딜레이 중인지 여부를 나타내는 플래그
       let animationFrameId: number; // requestAnimationFrame의 ID를 저장하는 변수 (애니메이션 정리(cleanup)에 사용)
+      let totalRotation = 0; // 누적된 총 회전 각도
 
       const animateFrame = (currentTime: number) => {
         // 1. 첫 프레임인 경우 시작 시간 설정
@@ -79,12 +80,12 @@ const createMotionComponent = <T extends HTMLElement>(Component: keyof JSX.Intri
           // 다음 반복을 위한 초기화
           isInDelay = true;
           startTime = null;
-          element.style.transform = `rotate(0deg)`;
+          totalRotation += animate.rotate || 0; // 누적 회전 각도 추가
         } else {
           // 현재 애니메이션 진행률 계산 및 적용
           const progress = elapsed / animationDuration;
-          const rotation = progress * (animate.rotate || 0);
-          element.style.transform = `rotate(${rotation}deg)`;
+          const currentRotation = progress * (animate.rotate || 0);
+          element.style.transform = `rotate(${totalRotation + currentRotation}deg)`;
         }
 
         // 트랜지션 효과 적용 (부드러운 움직임을 위한 CSS 트랜지션)
