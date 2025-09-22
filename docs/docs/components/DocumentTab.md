@@ -66,7 +66,7 @@ function App() {
 ### 라우트별로 다르게 적용하기 (React Router)
 
 ```tsx
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Link } from 'react-router';
 import { DocumentTab } from 'hookdle';
 
 const meta = [
