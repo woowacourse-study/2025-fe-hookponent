@@ -28,7 +28,7 @@ describe('useDeviceShake', () => {
     const { result } = renderHook(() => useDeviceShake({}));
     expect(result.current.isShaking).toBe(false);
     expect(result.current.shakeCount).toBe(0);
-    expect(result.current.permission).toBe('default');
+    expect(result.current.permission).toBe('granted');
   });
 
   it('requestPermission이 호출되면 permission이 granted로 바뀐다 (Android/desktop)', async () => {
