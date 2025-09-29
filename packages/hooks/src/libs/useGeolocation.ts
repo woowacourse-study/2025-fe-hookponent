@@ -62,7 +62,7 @@ export function useGeolocation({
   const loading = useMemo(() => coords === null && error === null, [coords, error]);
 
   useEffect(() => {
-    if (!('geolocation' in navigator)) {
+    if (!('geolocation' in navigator) || !navigator.geolocation) {
       setError({ code: 0, message: 'Geolocation is not supported by this browser.' } as GeolocationPositionError);
       return;
     }
@@ -80,7 +80,6 @@ export function useGeolocation({
       timeout,
       enableHighAccuracy,
     };
-    console.log(options);
 
     if (watch) {
       const id = navigator.geolocation.watchPosition(onSuccess, onError, options);
