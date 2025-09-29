@@ -70,7 +70,7 @@ export const useDeviceShake = ({ threshold = 15, callback }: UseDeviceShakeOptio
     if (permission !== 'granted') return;
 
     const handler = (e: DeviceMotionEvent) => {
-      const { x = 0, y = 0, z = 0 } = e.accelerationIncludingGravity;
+      const { x = 0, y = 0, z = 0 } = e.accelerationIncludingGravity || {};
       const total = Math.sqrt(x * x + y * y + z * z);
       const now = Date.now();
 
