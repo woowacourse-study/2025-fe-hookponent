@@ -53,7 +53,7 @@ export function useViewTransition(): UseViewTransitionReturn {
     }
 
     try {
-      const transition = (document as any).startViewTransition(update);
+      const transition = (document as Document & { startViewTransition: (update: () => void) => ViewTransition }).startViewTransition(update);
       
       if (options?.onReady) {
         transition.ready.then(options.onReady).catch(() => {

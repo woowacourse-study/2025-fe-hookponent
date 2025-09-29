@@ -30,7 +30,7 @@ describe('useViewTransition 훅 검증 테스트', () => {
   });
 
   afterEach(() => {
-    delete (document as any).startViewTransition;
+    delete (document as Document & { startViewTransition?: unknown }).startViewTransition;
   });
 
   describe('기본 반환값 검증', () => {
@@ -166,7 +166,7 @@ describe('useViewTransition 훅 검증 테스트', () => {
   describe('startTransition 기능 테스트 - View Transition API 미지원', () => {
     beforeEach(() => {
       // document.startViewTransition 제거
-      delete (document as any).startViewTransition;
+      delete (document as Document & { startViewTransition?: unknown }).startViewTransition;
     });
 
     it('View Transition API가 없을 때 폴백 모드로 동작해야 한다', () => {
@@ -241,11 +241,11 @@ describe('useViewTransition 훅 검증 테스트', () => {
 
       // Promise rejection 처리 대기
       await act(async () => {
-        try {
-          await failedTransition.ready;
-        } catch (error) {
-          // 에러는 catch되지만 onReady는 여전히 호출되어야 함
-        }
+      try {
+        await failedTransition.ready;
+      } catch {
+        // 에러는 catch되지만 onReady는 여전히 호출되어야 함
+      }
       });
 
       expect(onReady).toHaveBeenCalledTimes(1);
@@ -269,11 +269,11 @@ describe('useViewTransition 훅 검증 테스트', () => {
 
       // Promise rejection 처리 대기
       await act(async () => {
-        try {
-          await failedTransition.finished;
-        } catch (error) {
-          // 에러는 catch되지만 onFinish는 여전히 호출되어야 함
-        }
+      try {
+        await failedTransition.finished;
+      } catch {
+        // 에러는 catch되지만 onFinish는 여전히 호출되어야 함
+      }
       });
 
       expect(onFinish).toHaveBeenCalledTimes(1);
