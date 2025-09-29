@@ -47,8 +47,6 @@ export const useDeviceShake = ({ threshold = 15, callback }: UseDeviceShakeOptio
       } catch {
         setPermission('denied');
       }
-    } else {
-      setPermission('granted');
     }
   }, []);
 
@@ -59,6 +57,14 @@ export const useDeviceShake = ({ threshold = 15, callback }: UseDeviceShakeOptio
   useEffect(() => {
     callbackRef.current = callback;
   }, [callback]);
+
+  useEffect(() => {
+    // Android → mount 시점에 자동 granted
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    if (typeof (DeviceMotionEvent as any)?.requestPermission !== 'function') {
+      setPermission('granted');
+    }
+  }, []);
 
   useEffect(() => {
     if (permission !== 'granted') return;
