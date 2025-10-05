@@ -35,7 +35,7 @@ describe('useGeolocation', () => {
     });
   });
 
-  it('브라우저에서 geolocation이 지원되지 않을 경우 에러를 반환한다', () => {
+  it('브라우저에서 geolocation이 지원되지 않을 경우 isSupported가 false가 된다', () => {
     Object.defineProperty(global.navigator, 'geolocation', {
       value: undefined,
       writable: true,
@@ -43,8 +43,8 @@ describe('useGeolocation', () => {
 
     const { result } = renderHook(() => useGeolocation());
 
-    expect(result.current.error).not.toBeNull();
-    expect(result.current.error?.message).toBe('Geolocation is not supported by this browser.');
+    expect(result.current.isSupported).toBe(false);
+    expect(result.current.error).toBeNull();
     expect(result.current.coords).toBeNull();
   });
 
