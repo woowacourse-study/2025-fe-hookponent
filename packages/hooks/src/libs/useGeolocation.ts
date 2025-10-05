@@ -8,6 +8,7 @@ interface UseGeolocationOptions {
 }
 
 interface UseGeolocationReturns {
+  isSupported: boolean; // Geolocation API 지원 여부
   coords: GeolocationCoordinates | null; // 위도/경도 등 좌표 정보
   loading: boolean; // 현재 위치 요청 중 여부
   error: GeolocationPositionError | null; // 권한 거부, 타임아웃 등 에러
@@ -29,6 +30,7 @@ interface UseGeolocationReturns {
  * @param {boolean} [options.enableHighAccuracy=false] - 고정밀 모드 사용 여부 (GPS 등 고성능 센서 활용)
  *
  * @returns {Object} - 위치 정보 및 상태를 담은 객체
+ * @returns {boolean} return.isSupported - 브라우저가 Geolocation API를 지원하는지 여부
  * @returns {GeolocationCoordinates | null} return.coords - 사용자의 위도, 경도 등 위치 좌표 정보
  * @returns {boolean} return.loading - 현재 위치 요청이 진행 중인지 여부 (`true`: 로딩 중)
  * @returns {GeolocationPositionError | null} return.error - 위치 요청 중 발생한 에러 정보
@@ -57,18 +59,20 @@ export function useGeolocation({
   timeout = Infinity,
   enableHighAccuracy = false,
 }: UseGeolocationOptions = {}): UseGeolocationReturns {
+  const [isSupported, setIsSupported] = useState(true);
   const [coords, setCoords] = useState<GeolocationCoordinates | null>(null);
   const [error, setError] = useState<GeolocationPositionError | null>(null);
-  const loading = useMemo(() => coords === null && error === null, [coords, error]);
+  const loading = useMemo(() => isSupported && coords === null && error === null, [coords, error, isSupported]);
 
   useEffect(() => {
     if (!('geolocation' in navigator) || !navigator.geolocation) {
-      setError({ code: 0, message: 'Geolocation is not supported by this browser.' } as GeolocationPositionError);
+      setIsSupported(false);
       return;
     }
 
     const onSuccess = (position: GeolocationPosition) => {
       setCoords(position.coords);
+      setError(null);
     };
 
     const onError = (err: GeolocationPositionError) => {
@@ -89,5 +93,5 @@ export function useGeolocation({
     }
   }, [enableHighAccuracy, maximumAge, timeout, watch]);
 
-  return { coords, loading, error };
+  return { isSupported, coords, loading, error };
 }
