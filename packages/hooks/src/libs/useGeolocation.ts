@@ -70,6 +70,9 @@ export function useGeolocation({
       return;
     }
 
+    setCoords(null);
+    setError(null);
+
     const onSuccess = (position: GeolocationPosition) => {
       setCoords(position.coords);
       setError(null);
