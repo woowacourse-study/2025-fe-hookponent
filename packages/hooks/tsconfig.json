@@ -1,0 +1,13 @@
+//test 코드용
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "module": "CommonJS",
+    "jsx": "react-jsx",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "types": ["react", "jest", "@testing-library/jest-dom", "node"]
+  },
+  "include": ["src", "index.ts"]
+}
