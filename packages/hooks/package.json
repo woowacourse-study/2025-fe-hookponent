@@ -1,6 +1,6 @@
 {
   "name": "hookdle",
-  "version": "1.0.9",
+  "version": "1.1.0",
   "types": "dist/index.d.ts",
   "main": "dist/index.js",
   "module": "esm/index.js",
@@ -28,7 +28,8 @@
     "build": "npm run build:cjs && npm run build:esm",
     "typecheck": "tsc --noEmit",
     "clean": "rm -rf dist esm",
-    "test": "jest"
+    "test": "jest",
+    "type-check": "tsc --noEmit"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.6.3",

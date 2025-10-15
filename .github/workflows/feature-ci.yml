@@ -32,13 +32,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      - name: Install dependencies
-        run: npm install
+      - uses: ./.github/actions/npm-setup-node
 
       - name: Run hooks tests
         working-directory: packages/hooks
@@ -51,13 +45,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      - name: Install dependencies
-        run: npm install
+      - uses: ./.github/actions/npm-setup-node
 
       - name: Run components tests
         working-directory: packages/components
