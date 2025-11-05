@@ -15,6 +15,10 @@ interface UseDeviceShakeReturn {
   requestPermission: () => Promise<void>;
 }
 
+const motionEvent = DeviceMotionEvent as typeof DeviceMotionEvent & {
+  requestPermission?: () => Promise<'granted' | 'denied'>;
+};
+
 /**
  * `useDeviceShake` 훅은 모바일 기기의 흔들림 동작을 감지하는 훅입니다.
  *
@@ -42,15 +46,16 @@ export const useDeviceShake = ({ threshold = 15, callback }: UseDeviceShakeOptio
 
   /** iOS Safari 권한 요청 */
   const requestPermission = useCallback(async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    if (typeof (DeviceMotionEvent as any)?.requestPermission === 'function') {
+    if (typeof motionEvent.requestPermission === 'function') {
       try {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const result = await (DeviceMotionEvent as any).requestPermission();
+        const result = await motionEvent.requestPermission();
         setPermission(result);
       } catch {
         setPermission('denied');
       }
+    } else {
+      // Android 등 (requestPermission 자체가 없음)
+      setPermission('granted');
     }
   }, []);
 
@@ -64,8 +69,7 @@ export const useDeviceShake = ({ threshold = 15, callback }: UseDeviceShakeOptio
 
   useEffect(() => {
     // Android → mount 시점에 자동 granted
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    if (typeof (DeviceMotionEvent as any)?.requestPermission !== 'function') {
+    if (typeof motionEvent?.requestPermission !== 'function') {
       setPermission('granted');
     }
   }, []);
