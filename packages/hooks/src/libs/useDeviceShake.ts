@@ -15,10 +15,6 @@ interface UseDeviceShakeReturn {
   requestPermission: () => Promise<void>;
 }
 
-const motionEvent = DeviceMotionEvent as typeof DeviceMotionEvent & {
-  requestPermission?: () => Promise<'granted' | 'denied'>;
-};
-
 /**
  * `useDeviceShake` 훅은 모바일 기기의 흔들림 동작을 감지하는 훅입니다.
  *
@@ -45,6 +41,10 @@ export const useDeviceShake = ({ threshold = 15, callback }: UseDeviceShakeOptio
 
   /** iOS Safari 권한 요청 */
   const requestPermission = useCallback(async () => {
+    const motionEvent = DeviceMotionEvent as typeof DeviceMotionEvent & {
+      requestPermission?: () => Promise<'granted' | 'denied'>;
+    };
+
     if (typeof motionEvent.requestPermission === 'function') {
       try {
         const result = await motionEvent.requestPermission();
@@ -67,6 +67,9 @@ export const useDeviceShake = ({ threshold = 15, callback }: UseDeviceShakeOptio
   }, [callback]);
 
   useEffect(() => {
+    const motionEvent = DeviceMotionEvent as typeof DeviceMotionEvent & {
+      requestPermission?: () => Promise<'granted' | 'denied'>;
+    };
     // Android → mount 시점에 자동 granted
     if (typeof motionEvent?.requestPermission !== 'function') {
       setPermission('granted');
