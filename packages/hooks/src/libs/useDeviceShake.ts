@@ -1,5 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
+/** 중력가속도(9.8m/s²) 기준으로 설정된 최소 감도 임계값 */
+const MIN_SHAKE_THRESHOLD = 12;
+
 interface UseDeviceShakeOptions {
   threshold?: number;
   callback?: () => void;
@@ -27,7 +30,8 @@ interface UseDeviceShakeReturn {
  * - `requestPermission`: 권한 요청 함수
  */
 export const useDeviceShake = ({ threshold = 15, callback }: UseDeviceShakeOptions): UseDeviceShakeReturn => {
-  if (threshold < 12) throw new Error('❌ threshold must be >= 12 (gravity baseline ≈ 9.8).');
+  if (threshold < MIN_SHAKE_THRESHOLD)
+    throw new Error(`❌ threshold must be >= ${MIN_SHAKE_THRESHOLD} (gravity baseline ≈ 9.8).`);
 
   const [isShaking, setIsShaking] = useState(false);
   const [shakeCount, setShakeCount] = useState(0);
