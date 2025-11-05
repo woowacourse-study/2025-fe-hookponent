@@ -42,7 +42,6 @@ export const useDeviceShake = ({ threshold = 15, callback }: UseDeviceShakeOptio
   const [permission, setPermission] = useState<'default' | 'granted' | 'denied'>('default');
   const thresholdRef = useRef<number>(threshold);
   const callbackRef = useRef<() => void>(callback);
-  const lastShakeRef = useRef<number>(0);
 
   /** iOS Safari 권한 요청 */
   const requestPermission = useCallback(async () => {
@@ -77,6 +76,8 @@ export const useDeviceShake = ({ threshold = 15, callback }: UseDeviceShakeOptio
   useEffect(() => {
     if (permission !== 'granted') return;
 
+    let lastShake = 0;
+
     const handler = (e: DeviceMotionEvent) => {
       const { x = 0, y = 0, z = 0 } = e.accelerationIncludingGravity || {};
       const total = Math.sqrt(x * x + y * y + z * z);
@@ -86,10 +87,10 @@ export const useDeviceShake = ({ threshold = 15, callback }: UseDeviceShakeOptio
         setIsShaking(true);
 
         // 디바운스 걸기
-        if (now - lastShakeRef.current > 500) {
+        if (now - lastShake > 500) {
           setShakeCount((prev) => prev + 1);
           callbackRef.current?.();
-          lastShakeRef.current = now;
+          lastShake = now;
         }
       } else {
         setIsShaking(false);
