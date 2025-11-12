@@ -1,6 +1,7 @@
 {
   "name": "componentdle",
   "version": "1.1.0",
+  "license": "MIT",
   "types": "dist/index.d.ts",
   "main": "dist/index.js",
   "module": "esm/index.js",
