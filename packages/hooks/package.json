@@ -1,6 +1,7 @@
 {
   "name": "hookdle",
-  "version": "1.2.0",
+  "version": "1.2.1",
+  "license": "MIT",
   "types": "dist/index.d.ts",
   "main": "dist/index.js",
   "module": "esm/index.js",
@@ -46,5 +47,8 @@
     "ts-node": "^10.9.2",
     "tslib": "^2.8.1",
     "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "qrcode": "^1.5.4"
   }
 }
