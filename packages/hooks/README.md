@@ -2,9 +2,6 @@
 
 > React 프로젝트에 바로 쓸 수 있는 실용적인 커스텀 훅 모음
 
-[![npm version](https://img.shields.io/npm/v/hookdle.svg)](https://www.npmjs.com/package/hookdle)
-[![license](https://img.shields.io/npm/l/hookdle.svg)](https://github.com/woowacourse-study/2025-fe-hookponent/blob/main/LICENSE)
-
 ## 📦 설치
 
 ```bash

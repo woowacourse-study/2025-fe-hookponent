@@ -2,9 +2,6 @@
 
 > React 프로젝트에 바로 쓸 수 있는 실용적인 재사용 컴포넌트 모음
 
-[![npm version](https://img.shields.io/npm/v/componentdle.svg)](https://www.npmjs.com/package/componentdle)
-[![license](https://img.shields.io/npm/l/componentdle.svg)](https://github.com/woowacourse-study/2025-fe-hookponent/blob/main/LICENSE)
-
 ## 📦 설치
 
 ```bash
