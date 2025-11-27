@@ -10,6 +10,14 @@ React 환경에서 자주 쓰이는 훅과 컴포넌트를 함께 만들어가�
 
 ---
 
+### 🔗 관련 링크
+
+- [hookdle npm](https://www.npmjs.com/package/hookdle)
+- [componentdle npm](https://www.npmjs.com/package/componentdle)
+- [라이브러리 공식 문서](https://hookponent.vercel.app/)
+
+---
+
 ### 🧱 스터디 목표
 
 1. **React 훅과 컴포넌트의 설계 패턴 확립**
@@ -62,6 +70,7 @@ React 환경에서 자주 쓰이는 훅과 컴포넌트를 함께 만들어가�
 - [packages 내부 세팅](https://hoyychoi.notion.site/packages-231222b4244b80ec95cbca6386c5ea11)
 - [docs 세팅 가이드](https://hoyychoi.notion.site/docusaurus-231222b4244b8043b595c43a2a998d91)
 - [진짜 최종 플로우 (훅만 만들래)](https://hoyychoi.notion.site/235222b4244b803b9f9df03386584c2b)
+- [훅 설계원칙 블로그](https://velog.io/@chy8165/%EC%A2%8B%EC%9D%80-%ED%9B%85%EC%9D%84-%EC%84%A4%EA%B3%84%ED%95%98%EA%B8%B0-%EC%9C%84%ED%95%9C-5%EA%B0%80%EC%A7%80-%EC%9B%90%EC%B9%99)
 
 ---
 
