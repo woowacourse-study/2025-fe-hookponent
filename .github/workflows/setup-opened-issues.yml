@@ -1,0 +1,58 @@
+name: Setup Opened Issues
+
+on:
+  issues:
+    types:
+      - opened
+
+jobs:
+  setup_issue:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      contents: read
+
+    steps:
+      - name: Set assignees
+        continue-on-error: true
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { issue, repository } = context.payload;
+            const author = issue.user.login;
+
+            await github.rest.issues.addAssignees({
+              owner: repository.owner.login,
+              repo: repository.name,g
+              issue_number: issue.number,
+              assignees: [author],
+            });
+
+      - name: Set labels
+        continue-on-error: true
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { issue, repository } = context.payload;
+            const title = issue.title;
+
+            const titleLabelMap = {
+              '컴포넌트': '컴포넌트 개발',
+              '훅': '훅 개발',
+            };
+
+            const prefix = Object.keys(titleLabelMap).find(keyword => title.includes(keyword));
+
+            const labels = [];
+            if (prefix) labels.push(titleLabelMap[prefix]);
+
+            if (labels.length) {
+              await github.rest.issues.addLabels({
+                owner: repository.owner.login,
+                repo: repository.name,
+                issue_number: issue.number,
+                labels,
+              });
+            }
